@@ -1,0 +1,54 @@
+@import "tailwindcss";
+
+:root {
+  --primary: #0D6E6E;
+  --primary-light: #E6F2F2;
+  --text-dark: #1A1A1A;
+  --text-muted: #666666;
+  --text-light: #888888;
+  --text-placeholder: #999999;
+  --bg-light: #F8F9FA;
+  --bg-warm: #F5F5F0;
+  --bg-card: #F9F9F9;
+  --bg-input: #F0F0F0;
+  --border: #E5E5E5;
+  --border-light: #EAEAEA;
+  --footer-dark: #1A1A1A;
+  --footer-text: #999999;
+  --footer-divider: #333333;
+  --success: #22C55E;
+  --error: #FF3366;
+  --warning: #B8860B;
+  --white: #FFFFFF;
+  --black: #000000;
+  --overlay: rgba(0, 0, 0, 0.4);
+}
+
+@layer base {
+  html, body {
+    height: 100%;
+  }
+
+  body {
+    font-family: var(--font-family, var(--font-inter), "Inter", sans-serif);
+    background-color: var(--bg, #FFFFFF);
+    color: var(--text-dark, #1A1A1A);
+  }
+
+  .font-primary {
+    font-family: var(--font-family, var(--font-inter), "Inter", sans-serif);
+  }
+}
+
+/* ─── Theme vars injected by ThemeProvider (fallback here) ──────── */
+:root {
+  --navbar-bg: #FFFFFF;
+  --navbar-text: #1A1A1A;
+  --navbar-active: #0D6E6E;
+  --card-radius: 12px;
+  --card-img-height: 180px;
+  --btn-radius: 6px;
+  --font-family: "Inter", sans-serif;
+  --base-font-size: 16px;
+  --bg: #FFFFFF;
+}
