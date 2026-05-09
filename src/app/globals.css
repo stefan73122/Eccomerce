@@ -29,6 +29,10 @@
     height: 100%;
   }
 
+  html {
+    font-size: var(--base-font-size, 16px);
+  }
+
   body {
     font-family: var(--font-family, var(--font-inter), "Inter", sans-serif);
     background-color: var(--bg, #FFFFFF);

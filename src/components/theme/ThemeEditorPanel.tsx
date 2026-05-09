@@ -218,53 +218,157 @@ function ColorsTab({ theme, patch }: { theme: StoreTheme; patch: (p: Partial<Sto
   );
 }
 
+// ─── Catálogo de fuentes por modelo de negocio ─────────────────────────────
+// Las fuentes propietarias (SF Pro, Helvetica Neue, Futura, Didot, Bodoni, Graphik,
+// Proxima Nova, Söhne, Circular, Amazon Ember, Motiva Sans) usan stacks del sistema.
+// Las disponibles en Google Fonts cargan vía URL.
+type FontDef = { value: string; label: string; url?: string; stack?: string };
+
+const FONT_GROUPS: Array<{ group: string; fonts: FontDef[] }> = [
+  {
+    group: 'Marketplace (Amazon, Mercado Libre, Etsy)',
+    fonts: [
+      { value: 'Inter',         label: 'Inter',         url: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap' },
+      { value: 'Helvetica Neue', label: 'Helvetica Neue', stack: '"Helvetica Neue", Helvetica, Arial, sans-serif' },
+      { value: 'Arial',         label: 'Proxima Nova / Arial', stack: '"Proxima Nova", "Helvetica Neue", Arial, sans-serif' },
+    ],
+  },
+  {
+    group: 'Moda / Fashion (Nike, Zara, Gymshark)',
+    fonts: [
+      { value: 'Montserrat',    label: 'Montserrat',    url: 'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap' },
+      { value: 'Bebas Neue',    label: 'Bebas Neue',    url: 'https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap' },
+      { value: 'Futura',        label: 'Futura',        stack: 'Futura, "Trebuchet MS", "Century Gothic", Arial, sans-serif' },
+      { value: 'Playfair Display', label: 'Didot / Playfair Display', url: 'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap' },
+      { value: 'Bodoni Moda',   label: 'Bodoni Moda',   url: 'https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@400;600;700&display=swap' },
+    ],
+  },
+  {
+    group: 'Tecnología / Electrónica (Apple, Samsung, Tesla)',
+    fonts: [
+      { value: 'Geist',         label: 'Geist',         url: 'https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap' },
+      { value: '-apple-system', label: 'SF Pro (Apple)', stack: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif' },
+      { value: 'IBM Plex Sans', label: 'IBM Plex Sans', url: 'https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap' },
+      { value: 'Roboto',        label: 'Roboto',        url: 'https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap' },
+      { value: 'Inter',         label: 'Inter',         url: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap' },
+    ],
+  },
+  {
+    group: 'Lujo / Premium (Rolex, Chanel, Louis Vuitton)',
+    fonts: [
+      { value: 'Playfair Display', label: 'Playfair Display', url: 'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap' },
+      { value: 'Bodoni Moda',   label: 'Bodoni',        url: 'https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@400;600;700&display=swap' },
+      { value: 'EB Garamond',   label: 'Garamond',      url: 'https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&display=swap' },
+      { value: 'Cormorant Garamond', label: 'Cormorant Garamond', url: 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&display=swap' },
+      { value: 'Cinzel',        label: 'Cinzel',        url: 'https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&display=swap' },
+    ],
+  },
+  {
+    group: 'SaaS / Plataformas (Stripe, Notion, Vercel)',
+    fonts: [
+      { value: 'Inter',         label: 'Inter',         url: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap' },
+      { value: 'Geist',         label: 'Geist',         url: 'https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap' },
+      { value: 'IBM Plex Sans', label: 'IBM Plex Sans', url: 'https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap' },
+      { value: 'Manrope',       label: 'Manrope',       url: 'https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap' },
+    ],
+  },
+  {
+    group: 'Delivery / Grocery (Rappi, PedidosYa)',
+    fonts: [
+      { value: 'Inter',         label: 'Inter',         url: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap' },
+      { value: 'Nunito',        label: 'Nunito',        url: 'https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap' },
+      { value: 'Poppins',       label: 'Poppins',       url: 'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap' },
+      { value: 'DM Sans',       label: 'DM Sans',       url: 'https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap' },
+    ],
+  },
+  {
+    group: 'Productos digitales (Udemy, Steam)',
+    fonts: [
+      { value: 'Inter',         label: 'Inter',         url: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap' },
+      { value: 'Roboto',        label: 'Roboto',        url: 'https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap' },
+      { value: 'Open Sans',     label: 'Open Sans',     url: 'https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap' },
+      { value: 'Lato',          label: 'Lato',          url: 'https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap' },
+    ],
+  },
+  {
+    group: 'Streetwear / Gaming (Gymshark, eSports)',
+    fonts: [
+      { value: 'Bebas Neue',    label: 'Bebas Neue',    url: 'https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap' },
+      { value: 'Anton',         label: 'Anton',         url: 'https://fonts.googleapis.com/css2?family=Anton&display=swap' },
+      { value: 'Oswald',        label: 'Oswald',        url: 'https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&display=swap' },
+      { value: 'Montserrat',    label: 'Montserrat',    url: 'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap' },
+      { value: 'Teko',          label: 'Teko',          url: 'https://fonts.googleapis.com/css2?family=Teko:wght@400;500;600;700&display=swap' },
+    ],
+  },
+  {
+    group: 'Minimalista / Apple-style (Apple, Nothing, Vercel)',
+    fonts: [
+      { value: '-apple-system', label: 'SF Pro (Apple)', stack: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif' },
+      { value: 'Inter',         label: 'Inter',         url: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap' },
+      { value: 'Geist',         label: 'Geist',         url: 'https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap' },
+      { value: 'Helvetica Neue', label: 'Helvetica Neue', stack: '"Helvetica Neue", Helvetica, Arial, sans-serif' },
+    ],
+  },
+];
+
+// Mapa rápido value -> URL (para resolver al elegir)
+const FONT_URL_MAP: Record<string, string> = (() => {
+  const map: Record<string, string> = {};
+  for (const g of FONT_GROUPS) for (const f of g.fonts) if (f.url) map[f.value] = f.url;
+  return map;
+})();
+
 function TypographyTab({ theme, patch }: { theme: StoreTheme; patch: (p: Partial<StoreTheme['typography']>) => void }) {
-  const FONTS = [
-    { value: 'Inter', label: 'Inter' },
-    { value: 'Roboto', label: 'Roboto' },
-    { value: 'Playfair Display', label: 'Playfair Display' },
-    { value: 'Poppins', label: 'Poppins' },
-    { value: 'Montserrat', label: 'Montserrat' },
-    { value: 'Lato', label: 'Lato' },
-    { value: 'Open Sans', label: 'Open Sans' },
-  ];
-  const FONT_URLS: Record<string, string> = {
-    Inter: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap',
-    Roboto: 'https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap',
-    'Playfair Display': 'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap',
-    Poppins: 'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap',
-    Montserrat: 'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap',
-    Lato: 'https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap',
-    'Open Sans': 'https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap',
-  };
   const SIZES = [
+    { value: '13px', label: '13px (compacto)' },
     { value: '14px', label: '14px' },
     { value: '15px', label: '15px' },
-    { value: '16px', label: '16px' },
+    { value: '16px', label: '16px (default)' },
     { value: '17px', label: '17px' },
     { value: '18px', label: '18px' },
+    { value: '19px', label: '19px' },
+    { value: '20px', label: '20px (grande)' },
   ];
   return (
     <div className="space-y-2">
       <Divider icon={Type} label="Fuente" />
       <Group>
-        <Select label="Familia" value={theme.typography.fontFamily} options={FONTS}
-          onChange={(v) => patch({ fontFamily: v, fontUrl: FONT_URLS[v] ?? '' })} />
+        <div className="space-y-1">
+          <p className="text-[10px] text-[#686878]">Familia (por modelo de negocio)</p>
+          <div className="relative">
+            <select
+              value={theme.typography.fontFamily}
+              onChange={(e) => patch({ fontFamily: e.target.value, fontUrl: FONT_URL_MAP[e.target.value] ?? '' })}
+              className="w-full bg-[#1C1C24] border border-[#28283A] rounded-lg pl-2.5 pr-7 h-7 text-[11px] text-[#C8C8DC] outline-none focus:border-[#10B981]/60 transition-colors appearance-none cursor-pointer"
+            >
+              {FONT_GROUPS.map((g) => (
+                <optgroup key={g.group} label={g.group} className="bg-[#1C1C24]">
+                  {g.fonts.map((f) => (
+                    <option key={`${g.group}-${f.value}-${f.label}`} value={f.value} className="bg-[#1C1C24]">
+                      {f.label}
+                    </option>
+                  ))}
+                </optgroup>
+              ))}
+            </select>
+            <ChevronDown size={11} className="absolute right-2 top-1/2 -translate-y-1/2 text-[#44445A] pointer-events-none" />
+          </div>
+        </div>
         <Sep />
         <Select label="Tamaño base" value={theme.typography.baseFontSize} options={SIZES}
           onChange={(v) => patch({ baseFontSize: v })} />
         <Sep />
         <div className="space-y-1">
-          <p className="text-[10px] text-[#686878]">Google Fonts URL</p>
+          <p className="text-[10px] text-[#686878]">Google Fonts URL (avanzado)</p>
           <TextInput value={theme.typography.fontUrl ?? ''} onChange={(v) => patch({ fontUrl: v })} placeholder="https://fonts.googleapis.com/…" />
         </div>
       </Group>
 
       <Divider icon={Sparkles} label="Vista previa" />
-      <div className="rounded-xl bg-[#141419] px-4 py-3 space-y-0.5" style={{ fontFamily: `'${theme.typography.fontFamily}', sans-serif` }}>
-        <p className="text-sm font-bold text-[#D8D8E8]">Título del producto</p>
-        <p className="text-xs text-[#8888A0]">Descripción en texto normal.</p>
-        <p className="text-[10px] text-[#444454]">Etiqueta secundaria.</p>
+      <div className="rounded-xl bg-[#141419] px-4 py-3 space-y-0.5" style={{ fontFamily: `'${theme.typography.fontFamily}', sans-serif`, fontSize: theme.typography.baseFontSize }}>
+        <p className="font-bold text-[#D8D8E8]" style={{ fontSize: '1em' }}>Título del producto</p>
+        <p className="text-[#8888A0]" style={{ fontSize: '0.85em' }}>Descripción en texto normal.</p>
+        <p className="text-[#444454]" style={{ fontSize: '0.7em' }}>Etiqueta secundaria.</p>
       </div>
     </div>
   );
