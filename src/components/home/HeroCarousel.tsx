@@ -102,11 +102,13 @@ export default function HeroCarousel() {
   return (
     <div
       className={cn(
-        'w-full h-[320px] sm:h-[420px] relative overflow-hidden bg-[#0A0A0A]',
-        layout === 'centered' && 'lg:max-w-[960px] lg:mx-auto',
-        layout === 'editorial' && 'lg:h-[640px]',
-        layout === 'fullwidth' && 'lg:h-[620px]',
+        'hero-carousel w-full h-[320px] sm:h-[420px] relative overflow-hidden',
       )}
+      style={{
+        backgroundColor: 'var(--banner-primary)',
+        borderRadius: 'var(--banner-radius)',
+        color: 'var(--banner-text)',
+      }}
     >
       {slides.map((slide, index) => {
         const imageUrl =
@@ -114,20 +116,31 @@ export default function HeroCarousel() {
             ? slide.imageUrlMobile
             : slide.imageUrl;
 
+        const hasImage = Boolean(imageUrl);
+
         const inner = (
           <>
+            {hasImage && (
+              <div
+                className="absolute inset-0 bg-cover bg-center"
+                style={{ backgroundImage: `url(${imageUrl})` }}
+              />
+            )}
             <div
-              className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: `url(${imageUrl})` }}
+              className="absolute inset-0"
+              style={{
+                background: hasImage
+                  ? 'linear-gradient(to top, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.22) 55%, transparent 100%)'
+                  : 'var(--banner-gradient)',
+              }}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
             <div className="absolute bottom-0 left-0 right-0 px-4 pb-8 sm:px-6 sm:pb-10 lg:px-20 lg:pb-[52px]">
               <div className="flex flex-col gap-3 lg:gap-4">
-                <h1 className="text-2xl sm:text-4xl lg:text-[52px] font-bold text-white leading-[1.1] whitespace-pre-line">
+                <h1 className="text-2xl sm:text-4xl lg:text-[52px] font-bold leading-[1.1] whitespace-pre-line" style={{ color: 'var(--banner-text)' }}>
                   {slide.title}
                 </h1>
                 {slide.subtitle && (
-                  <p className="text-sm sm:text-base text-white/80 leading-relaxed max-w-lg">
+                  <p className="text-sm sm:text-base leading-relaxed max-w-lg" style={{ color: 'var(--banner-text)', opacity: 0.9 }}>
                     {slide.subtitle}
                   </p>
                 )}

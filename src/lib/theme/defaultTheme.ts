@@ -38,12 +38,16 @@ export const defaultTheme: StoreTheme = {
   },
 
   navbar: {
+    variant:         'classic',
     backgroundColor: '#FFFFFF',
     textColor:       '#1A1A1A',
     activeColor:     '#0D6E6E',
+    hoverColor:      '#E5E5E5',
     layout:          'horizontal',
     sticky:          true,
     showSearch:      true,
+    borderRadius:    '0px',
+    shadow:          false,
   },
 
   categoryBar: {
@@ -88,9 +92,35 @@ export const defaultTheme: StoreTheme = {
     textColor:       '#999999',
   },
 
+  buttons: {
+    primaryColor:  '#0D6E6E',
+    hoverColor:    '#0A5555',
+    hoverEffect:   'fade',
+    borderRadius:  '6px',
+    shadow:        false,
+  },
+
+  banners: {
+    primaryColor:     '#0D6E6E',
+    gradient:         'linear-gradient(135deg, #0D6E6E 0%, #0A5555 100%)',
+    textColor:        '#FFFFFF',
+    opacity:          1,
+    borderRadius:     '0px',
+    heroHeight:       '',
+    heroMaxWidth:     '100%',
+    brandBannerHeight: '200px',
+  },
+
   /* ── Nuevos campos ── */
   layout:        'default',
   businessModel: 'general',
+
+  layoutSettings: {
+    default:   { heroHeight: '520px', containerMaxWidth: '1320px', sectionGap: '2rem' },
+    centered:  { heroHeight: '420px', containerMaxWidth: '960px',  paddingX: '3rem'  },
+    editorial: { heroHeight: '580px', sidebarWidth: '360px',       sidebarBg: '',    sidebarPosition: 'right' },
+    fullwidth: { heroHeight: '640px', paddingX: '0px' },
+  },
 
   homeSections: [
     { id: 'promotions',       visible: true,  title: 'Promociones',                 subtitle: 'Las mejores ofertas del momento' },

@@ -5,23 +5,26 @@ import {
   X, Store, Palette, Type, Layout, ShoppingBag, LogIn, RotateCcw,
   AlignJustify, Megaphone, Rows3, SlidersHorizontal, MousePointerClick,
   Sparkles, Image as ImageIcon, ChevronDown, Home, LayoutGrid, Eye,
-  Monitor,
+  Monitor, Zap, Layers,
 } from 'lucide-react';
 import { useUIStore } from '@/store/useUIStore';
 import { useTheme } from '@/lib/theme/ThemeContext';
 import { cn } from '@/lib/cn';
 import type { StoreTheme, LayoutMode, BusinessModel } from '@/lib/theme/theme.types';
 import HomeSectionsTab from './HomeSectionsTab';
+import { THEME_PRESETS } from '@/lib/theme/themePresets';
 
 // ─── Tab config ───────────────────────────────────────────────────────────────
 
-type Tab = 'branding' | 'colors' | 'typography' | 'navbar' | 'layout' | 'home' | 'cards' | 'login';
+type Tab = 'branding' | 'colors' | 'typography' | 'navbar' | 'layout' | 'home' | 'cards' | 'buttons' | 'banners' | 'login';
 
 const TABS: Array<{ id: Tab; label: string; icon: React.ElementType }> = [
   { id: 'branding',   label: 'Marca',   icon: Store      },
   { id: 'colors',     label: 'Colores', icon: Palette    },
   { id: 'typography', label: 'Tipo',    icon: Type       },
   { id: 'navbar',     label: 'Navbar',  icon: Layout     },
+  { id: 'buttons',    label: 'Botones', icon: Zap        },
+  { id: 'banners',    label: 'Banners', icon: Layers     },
   { id: 'layout',     label: 'Layout',  icon: LayoutGrid },
   { id: 'home',       label: 'Home',    icon: Home       },
   { id: 'cards',      label: 'Cards',   icon: ShoppingBag },
@@ -128,28 +131,100 @@ function Sep() { return <div className="h-px bg-[#1E1E2A] -mx-3" />; }
 const COLOR_PRESETS: Array<{
   id: string; label: string; swatch: string;
   colors: Partial<StoreTheme['colors']>;
+  navbar?: Partial<StoreTheme['navbar']>;
+  buttons?: Partial<StoreTheme['buttons']>;
+  banners?: Partial<StoreTheme['banners']>;
+  categoryBar?: Partial<StoreTheme['categoryBar']>;
+  topBar?: Partial<StoreTheme['topBar']>;
+  announcementBar?: Partial<StoreTheme['announcementBar']>;
 }> = [
-  { id: 'default', label: 'Default', swatch: '#0D6E6E',
-    colors: { primary: '#0D6E6E', secondary: '#1A1A1A', background: '#FFFFFF', surface: '#F8F9FA', text: '#1A1A1A', textMuted: '#666666', border: '#E5E5E5' } },
-  { id: 'dark', label: 'Dark', swatch: '#22C55E',
-    colors: { primary: '#22C55E', secondary: '#16A34A', background: '#0F172A', surface: '#111827', text: '#F9FAFB', textMuted: '#9CA3AF', border: '#374151' } },
-  { id: 'minimal', label: 'Minimal', swatch: '#111111',
-    colors: { primary: '#111111', secondary: '#333333', background: '#FFFFFF', surface: '#FAFAFA', text: '#111111', textMuted: '#555555', border: '#E5E5E5' } },
-  { id: 'bold', label: 'Bold', swatch: '#E63946',
-    colors: { primary: '#E63946', secondary: '#C1121F', background: '#FFF8F8', surface: '#FFF0F1', text: '#1A0508', textMuted: '#7A3040', border: '#FCCDD1' } },
-  { id: 'luxury', label: 'Luxury', swatch: '#B8960C',
-    colors: { primary: '#B8960C', secondary: '#9A7C08', background: '#FFFEF9', surface: '#F8F4EF', text: '#1C1200', textMuted: '#7A6820', border: '#E0D4A0' } },
-  { id: 'fresh', label: 'Fresh', swatch: '#0B7A4E',
-    colors: { primary: '#0B7A4E', secondary: '#065F3B', background: '#F0FAF5', surface: '#E8F7EF', text: '#052E1C', textMuted: '#3D7A5A', border: '#A7E8C8' } },
-  { id: 'tech', label: 'Tech', swatch: '#2563EB',
-    colors: { primary: '#2563EB', secondary: '#1D4ED8', background: '#EEF2FF', surface: '#E8EDFA', text: '#0F172A', textMuted: '#4A6090', border: '#BFCFEE' } },
-  { id: 'warm', label: 'Warm', swatch: '#C2410C',
-    colors: { primary: '#C2410C', secondary: '#9A3408', background: '#FFF7F3', surface: '#FFF0E8', text: '#2C1203', textMuted: '#8A4020', border: '#F8C8A8' } },
+  {
+    id: 'default', label: 'Default', swatch: '#0D6E6E',
+    colors: THEME_PRESETS.default.colors,
+    navbar: THEME_PRESETS.default.navbar,
+    buttons: THEME_PRESETS.default.buttons,
+    banners: THEME_PRESETS.default.banners,
+    categoryBar: THEME_PRESETS.default.categoryBar,
+    topBar: THEME_PRESETS.default.topBar,
+    announcementBar: THEME_PRESETS.default.announcementBar,
+  },
+  {
+    id: 'dark', label: 'Dark', swatch: '#22C55E',
+    colors: THEME_PRESETS.dark.colors,
+    navbar: THEME_PRESETS.dark.navbar,
+    buttons: THEME_PRESETS.dark.buttons,
+    banners: THEME_PRESETS.dark.banners,
+    categoryBar: THEME_PRESETS.dark.categoryBar,
+    topBar: THEME_PRESETS.dark.topBar,
+    announcementBar: THEME_PRESETS.dark.announcementBar,
+  },
+  {
+    id: 'minimal', label: 'Minimal', swatch: '#111111',
+    colors: THEME_PRESETS.minimal.colors,
+    navbar: THEME_PRESETS.minimal.navbar,
+    buttons: THEME_PRESETS.minimal.buttons,
+    banners: THEME_PRESETS.minimal.banners,
+    categoryBar: THEME_PRESETS.minimal.categoryBar,
+    topBar: THEME_PRESETS.minimal.topBar,
+    announcementBar: THEME_PRESETS.minimal.announcementBar,
+  },
+  {
+    id: 'bold', label: 'Bold', swatch: '#E63946',
+    colors: THEME_PRESETS.bold.colors,
+    navbar: THEME_PRESETS.bold.navbar,
+    buttons: THEME_PRESETS.bold.buttons,
+    banners: THEME_PRESETS.bold.banners,
+    categoryBar: THEME_PRESETS.bold.categoryBar,
+    topBar: THEME_PRESETS.bold.topBar,
+    announcementBar: THEME_PRESETS.bold.announcementBar,
+  },
+  {
+    id: 'luxury', label: 'Luxury', swatch: '#B8960C',
+    colors: THEME_PRESETS.luxury.colors,
+    navbar: THEME_PRESETS.luxury.navbar,
+    buttons: THEME_PRESETS.luxury.buttons,
+    banners: THEME_PRESETS.luxury.banners,
+    categoryBar: THEME_PRESETS.luxury.categoryBar,
+    topBar: THEME_PRESETS.luxury.topBar,
+    announcementBar: THEME_PRESETS.luxury.announcementBar,
+  },
+  {
+    id: 'fresh', label: 'Fresh', swatch: '#0B7A4E',
+    colors: THEME_PRESETS.fresh.colors,
+    navbar: THEME_PRESETS.fresh.navbar,
+    buttons: THEME_PRESETS.fresh.buttons,
+    banners: THEME_PRESETS.fresh.banners,
+    categoryBar: THEME_PRESETS.fresh.categoryBar,
+    topBar: THEME_PRESETS.fresh.topBar,
+    announcementBar: THEME_PRESETS.fresh.announcementBar,
+  },
+  {
+    id: 'tech', label: 'Tech', swatch: '#2563EB',
+    colors: THEME_PRESETS.tech.colors,
+    navbar: THEME_PRESETS.tech.navbar,
+    buttons: THEME_PRESETS.tech.buttons,
+    banners: THEME_PRESETS.tech.banners,
+    categoryBar: THEME_PRESETS.tech.categoryBar,
+    topBar: THEME_PRESETS.tech.topBar,
+    announcementBar: THEME_PRESETS.tech.announcementBar,
+  },
+  {
+    id: 'warm', label: 'Warm', swatch: '#C2410C',
+    colors: THEME_PRESETS.warm.colors,
+    navbar: THEME_PRESETS.warm.navbar,
+    buttons: THEME_PRESETS.warm.buttons,
+    banners: THEME_PRESETS.warm.banners,
+    categoryBar: THEME_PRESETS.warm.categoryBar,
+    topBar: THEME_PRESETS.warm.topBar,
+    announcementBar: THEME_PRESETS.warm.announcementBar,
+  },
 ];
+
+type PresetEntry = typeof COLOR_PRESETS[number];
 
 function ColorPresetsGrid({ current, onSelect }: {
   current: StoreTheme['colors'];
-  onSelect: (colors: Partial<StoreTheme['colors']>) => void;
+  onSelect: (preset: PresetEntry) => void;
 }) {
   const activeId = COLOR_PRESETS.find((p) => p.colors.primary === current.primary)?.id ?? null;
 
@@ -160,7 +235,7 @@ function ColorPresetsGrid({ current, onSelect }: {
         return (
           <button
             key={preset.id}
-            onClick={() => onSelect(preset.colors)}
+            onClick={() => onSelect(preset)}
             title={preset.label}
             className={cn(
               'flex flex-col items-center gap-1.5 py-2 px-1 rounded-xl transition-all',
@@ -196,24 +271,293 @@ const LAYOUTS: Array<{ id: LayoutMode; label: string; desc: string }> = [
   { id: 'fullwidth', label: 'Full Width', desc: 'Sin límites, inmersivo'       },
 ];
 
-const MODELS: Array<{ id: BusinessModel; label: string; emoji: string; desc: string }> = [
-  { id: 'general',     label: 'General',     emoji: '🛒', desc: 'Producto primero (Amazon)'         },
-  { id: 'sport',       label: 'Sport',       emoji: '👟', desc: 'Hero fuerte, branding (Nike)'      },
-  { id: 'fashion',     label: 'Fashion',     emoji: '👗', desc: 'Visual, minimal (Zara)'            },
-  { id: 'food',        label: 'Food',        emoji: '🍔', desc: "Imágenes grandes (McDonald's)"     },
-  { id: 'street',      label: 'Street',      emoji: '🧢', desc: 'Minimal extremo (Supreme)'         },
-  { id: 'marketplace', label: 'Marketplace', emoji: '🛍️', desc: 'Categorías primero (MercadoLibre)' },
+// ─── Presets completos por modelo de negocio ─────────────────────────────────
+// Cada modelo define layout, paleta, tipografía, tarjetas y layout settings
+
+type FullBusinessPreset = {
+  layout: LayoutMode;
+  colorPresetId: string;
+  accentColor: string;
+  label: string;
+  emoji: string;
+  font: string;
+  fontUrl: string;
+  fontStack?: string;
+  tags: string[];
+  desc: string;
+  navbarVariant: NonNullable<StoreTheme['navbar']['variant']>;
+  productCards: Partial<StoreTheme['productCards']>;
+  buttons: Partial<StoreTheme['buttons']>;
+  banners: Partial<StoreTheme['banners']>;
+  layoutSettings: NonNullable<StoreTheme['layoutSettings']>;
+};
+
+const FULL_BUSINESS_PRESETS: Record<BusinessModel, FullBusinessPreset> = {
+  general: {
+    layout: 'default',
+    colorPresetId: 'default',
+    accentColor: '#0D6E6E',
+    label: 'General',
+    emoji: '🛒',
+    font: 'Inter',
+    fontUrl: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap',
+    tags: ['4 col', 'Default', 'Inter'],
+    desc: 'Producto primero (Amazon)',
+    navbarVariant: 'classic',
+    productCards: {
+      variant: 'classic', borderRadius: '12px', shadow: true,
+      hoverEffect: 'zoom', imageAspect: 'auto', imageHeight: '200px',
+      buttonStyle: 'rounded', showBadge: true, showRating: true,
+      showWishlist: true, showStock: true, showCategory: true,
+    },
+    buttons: { borderRadius: '6px', hoverEffect: 'fade', shadow: false },
+    banners: { borderRadius: '0px', textColor: '#FFFFFF' },
+    layoutSettings: { default: { heroHeight: '480px', containerMaxWidth: '1320px', sectionGap: '2rem' } },
+  },
+
+  sport: {
+    layout: 'fullwidth',
+    colorPresetId: 'bold',
+    accentColor: '#E63946',
+    label: 'Sport',
+    emoji: '👟',
+    font: 'Bebas Neue',
+    fontUrl: 'https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap',
+    tags: ['100vh', 'Full Width', 'Bebas Neue'],
+    desc: 'Hero fuerte, branding (Nike)',
+    navbarVariant: 'bold',
+    productCards: {
+      variant: 'overlay', borderRadius: '0px', shadow: false,
+      hoverEffect: 'zoom', imageAspect: 'portrait', imageHeight: '300px',
+      buttonStyle: 'square', showBadge: true, showRating: false,
+      showWishlist: false, showStock: false, showCategory: false,
+    },
+    buttons: { borderRadius: '0px', hoverEffect: 'scale', shadow: true },
+    banners: { borderRadius: '0px', textColor: '#FFFFFF' },
+    layoutSettings: { fullwidth: { heroHeight: '100vh', paddingX: '0px' } },
+  },
+
+  fashion: {
+    layout: 'centered',
+    colorPresetId: 'minimal',
+    accentColor: '#111111',
+    label: 'Fashion',
+    emoji: '👗',
+    font: 'Playfair Display',
+    fontUrl: 'https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap',
+    tags: ['90vh', 'Centrado', 'Playfair'],
+    desc: 'Visual, editorial (Zara)',
+    navbarVariant: 'centered',
+    productCards: {
+      variant: 'minimal', borderRadius: '0px', shadow: false,
+      hoverEffect: 'lift', imageAspect: 'portrait', imageHeight: '320px',
+      buttonStyle: 'pill', showBadge: false, showRating: false,
+      showWishlist: true, showStock: false, showCategory: false,
+    },
+    buttons: { borderRadius: '24px', hoverEffect: 'fade', shadow: false },
+    banners: { borderRadius: '0px', textColor: '#FFFFFF' },
+    layoutSettings: { centered: { heroHeight: '90vh', containerMaxWidth: '960px', paddingX: '4rem' } },
+  },
+
+  food: {
+    layout: 'default',
+    colorPresetId: 'warm',
+    accentColor: '#C2410C',
+    label: 'Food',
+    emoji: '🍔',
+    font: 'Nunito',
+    fontUrl: 'https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap',
+    tags: ['420px', 'Default', 'Nunito'],
+    desc: 'Imágenes apetitosas (Rappi)',
+    navbarVariant: 'stacked',
+    productCards: {
+      variant: 'classic', borderRadius: '20px', shadow: true,
+      hoverEffect: 'lift', imageAspect: 'square', imageHeight: '180px',
+      buttonStyle: 'pill', showBadge: true, showRating: true,
+      showWishlist: false, showStock: true, showCategory: true,
+    },
+    buttons: { borderRadius: '24px', hoverEffect: 'lift', shadow: false },
+    banners: { borderRadius: '16px', textColor: '#FFFFFF' },
+    layoutSettings: { default: { heroHeight: '420px', containerMaxWidth: '1200px', sectionGap: '1.5rem' } },
+  },
+
+  street: {
+    layout: 'editorial',
+    colorPresetId: 'minimal',
+    accentColor: '#1A1A1A',
+    label: 'Street',
+    emoji: '🧢',
+    font: 'Anton',
+    fontUrl: 'https://fonts.googleapis.com/css2?family=Anton&display=swap',
+    tags: ['640px', 'Editorial', 'Anton'],
+    desc: 'Minimal extremo (Supreme)',
+    navbarVariant: 'minimal',
+    productCards: {
+      variant: 'overlay', borderRadius: '0px', shadow: false,
+      hoverEffect: 'zoom', imageAspect: 'portrait', imageHeight: '340px',
+      buttonStyle: 'square', showBadge: false, showRating: false,
+      showWishlist: false, showStock: false, showCategory: false,
+    },
+    buttons: { borderRadius: '0px', hoverEffect: 'none', shadow: false },
+    banners: { borderRadius: '0px', textColor: '#FFFFFF' },
+    layoutSettings: { editorial: { heroHeight: '640px', sidebarWidth: '300px', sidebarPosition: 'right', sidebarBg: '#111111' } },
+  },
+
+  marketplace: {
+    layout: 'fullwidth',
+    colorPresetId: 'tech',
+    accentColor: '#2563EB',
+    label: 'Marketplace',
+    emoji: '🛍️',
+    font: 'Inter',
+    fontUrl: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap',
+    tags: ['300px', 'Full Width', 'Compacto'],
+    desc: 'Categorías primero (MercadoLibre)',
+    navbarVariant: 'horizontal',
+    productCards: {
+      variant: 'compact', borderRadius: '8px', shadow: false,
+      hoverEffect: 'none', imageAspect: 'square', imageHeight: '120px',
+      buttonStyle: 'rounded', showBadge: true, showRating: true,
+      showWishlist: false, showStock: true, showCategory: true,
+    },
+    buttons: { borderRadius: '4px', hoverEffect: 'fade', shadow: false },
+    banners: { borderRadius: '8px', textColor: '#FFFFFF' },
+    layoutSettings: { fullwidth: { heroHeight: '300px', paddingX: '1rem' } },
+  },
+};
+
+const HERO_HEIGHT_OPTIONS = [
+  { value: '320px', label: '320px — compacto'       },
+  { value: '420px', label: '420px'                  },
+  { value: '480px', label: '480px'                  },
+  { value: '520px', label: '520px — default'        },
+  { value: '580px', label: '580px'                  },
+  { value: '640px', label: '640px — grande'         },
+  { value: '720px', label: '720px'                  },
+  { value: '80vh',  label: '80vh — relativo'        },
+  { value: '90vh',  label: '90vh'                   },
+  { value: '100vh', label: '100vh — pantalla completa' },
 ];
 
-// Presets completos: al elegir modelo se aplica todo en conjunto
-const BUSINESS_PRESET_MAP: Record<BusinessModel, { layout: LayoutMode; colors: Partial<StoreTheme['colors']> }> = {
-  general:     { layout: 'default',   colors: COLOR_PRESETS.find((p) => p.id === 'default')!.colors },
-  sport:       { layout: 'fullwidth', colors: COLOR_PRESETS.find((p) => p.id === 'bold')!.colors    },
-  fashion:     { layout: 'centered',  colors: COLOR_PRESETS.find((p) => p.id === 'minimal')!.colors },
-  food:        { layout: 'default',   colors: COLOR_PRESETS.find((p) => p.id === 'warm')!.colors    },
-  street:      { layout: 'editorial', colors: COLOR_PRESETS.find((p) => p.id === 'minimal')!.colors },
-  marketplace: { layout: 'fullwidth', colors: COLOR_PRESETS.find((p) => p.id === 'tech')!.colors    },
-};
+const SIDEBAR_WIDTH_OPTIONS = [
+  { value: '280px', label: '280px — estrecho' },
+  { value: '320px', label: '320px'            },
+  { value: '360px', label: '360px — default'  },
+  { value: '400px', label: '400px'            },
+  { value: '440px', label: '440px — ancho'   },
+];
+
+function LayoutSpecificSettings({
+  theme,
+  update,
+}: {
+  theme: StoreTheme;
+  update: (patch: Partial<StoreTheme>) => void;
+}) {
+  const layout = theme.layout ?? 'default';
+  const ls = theme.layoutSettings ?? {};
+
+  const patchLayout = (key: 'default' | 'centered' | 'editorial' | 'fullwidth', value: Record<string, unknown>) => {
+    update({
+      layoutSettings: { ...ls, [key]: { ...(ls[key] as Record<string, unknown> ?? {}), ...value } },
+    } as unknown as Partial<StoreTheme>);
+  };
+
+  const def  = (ls.default   ?? {}) as Record<string, string>;
+  const cen  = (ls.centered  ?? {}) as Record<string, string>;
+  const ed   = (ls.editorial ?? {}) as Record<string, string>;
+  const fw   = (ls.fullwidth ?? {}) as Record<string, string>;
+
+  return (
+    <div className="space-y-2">
+      <Divider icon={SlidersHorizontal} label="Configuración del layout activo" />
+
+      {layout === 'default' && (
+        <Group>
+          <Select
+            label="Altura del hero"
+            value={def.heroHeight || '520px'}
+            options={HERO_HEIGHT_OPTIONS}
+            onChange={(v) => patchLayout('default', { heroHeight: v })}
+          />
+          <Sep />
+          <div className="space-y-1">
+            <p className="text-[10px] text-[#686878]">Ancho máximo del contenedor</p>
+            <TextInput value={def.containerMaxWidth || '1320px'} onChange={(v) => patchLayout('default', { containerMaxWidth: v })} placeholder="1320px" />
+          </div>
+        </Group>
+      )}
+
+      {layout === 'centered' && (
+        <Group>
+          <Select
+            label="Altura del hero"
+            value={cen.heroHeight || '420px'}
+            options={HERO_HEIGHT_OPTIONS}
+            onChange={(v) => patchLayout('centered', { heroHeight: v })}
+          />
+          <Sep />
+          <div className="space-y-1">
+            <p className="text-[10px] text-[#686878]">Ancho máximo</p>
+            <TextInput value={cen.containerMaxWidth || '960px'} onChange={(v) => patchLayout('centered', { containerMaxWidth: v })} placeholder="960px" />
+          </div>
+          <Sep />
+          <div className="space-y-1">
+            <p className="text-[10px] text-[#686878]">Padding horizontal</p>
+            <TextInput value={cen.paddingX || '3rem'} onChange={(v) => patchLayout('centered', { paddingX: v })} placeholder="3rem" />
+          </div>
+        </Group>
+      )}
+
+      {layout === 'editorial' && (
+        <Group>
+          <Select
+            label="Altura del hero"
+            value={ed.heroHeight || '580px'}
+            options={HERO_HEIGHT_OPTIONS}
+            onChange={(v) => patchLayout('editorial', { heroHeight: v })}
+          />
+          <Sep />
+          <Select
+            label="Posición del sidebar"
+            value={ed.sidebarPosition || 'right'}
+            options={[{ value: 'right', label: 'Derecha' }, { value: 'left', label: 'Izquierda' }]}
+            onChange={(v) => patchLayout('editorial', { sidebarPosition: v as 'left' | 'right' })}
+          />
+          <Sep />
+          <Select
+            label="Ancho del sidebar"
+            value={ed.sidebarWidth || '360px'}
+            options={SIDEBAR_WIDTH_OPTIONS}
+            onChange={(v) => patchLayout('editorial', { sidebarWidth: v })}
+          />
+          <Sep />
+          <ColorRow
+            label="Fondo del sidebar"
+            value={ed.sidebarBg || '#F8F9FA'}
+            onChange={(v) => patchLayout('editorial', { sidebarBg: v })}
+          />
+        </Group>
+      )}
+
+      {layout === 'fullwidth' && (
+        <Group>
+          <Select
+            label="Altura del hero"
+            value={fw.heroHeight || '640px'}
+            options={HERO_HEIGHT_OPTIONS}
+            onChange={(v) => patchLayout('fullwidth', { heroHeight: v })}
+          />
+          <Sep />
+          <div className="space-y-1">
+            <p className="text-[10px] text-[#686878]">Padding lateral de secciones</p>
+            <TextInput value={fw.paddingX || '0px'} onChange={(v) => patchLayout('fullwidth', { paddingX: v })} placeholder="0px" />
+          </div>
+        </Group>
+      )}
+    </div>
+  );
+}
 
 function LayoutSection({
   theme,
@@ -247,6 +591,7 @@ function LayoutSection({
         })}
       </div>
       <LayoutPreview current={currentLayout} />
+      <LayoutSpecificSettings theme={theme} update={update} />
     </div>
   );
 }
@@ -261,37 +606,80 @@ function BusinessModelSection({
   const currentModel = theme.businessModel ?? 'general';
 
   const handleModelSelect = (id: BusinessModel) => {
-    const preset = BUSINESS_PRESET_MAP[id];
-    // Aplica modelo + layout + colores del preset de golpe
-    update({ businessModel: id, layout: preset.layout, colors: preset.colors as StoreTheme['colors'] });
+    const fp = FULL_BUSINESS_PRESETS[id];
+    const colorPreset = COLOR_PRESETS.find((p) => p.id === fp.colorPresetId)!;
+
+    update({
+      businessModel: id,
+      layout: fp.layout,
+      // Colors from preset
+      colors: { ...theme.colors, ...colorPreset.colors },
+      // Typography — font + URL
+      typography: {
+        ...theme.typography,
+        fontFamily: fp.font,
+        fontUrl: fp.fontUrl,
+      },
+      // Product cards — full override
+      productCards: { ...theme.productCards, ...fp.productCards },
+      // Layout settings — merge so other layouts keep their settings
+      layoutSettings: { ...theme.layoutSettings, ...fp.layoutSettings },
+      // Navbar variant from model + colors from preset
+      navbar: { ...theme.navbar, ...(colorPreset.navbar ?? {}), variant: fp.navbarVariant },
+      buttons: { ...theme.buttons, ...(colorPreset.buttons ?? {}), ...fp.buttons },
+      banners: { ...theme.banners, ...(colorPreset.banners ?? {}), ...fp.banners },
+      ...(colorPreset.categoryBar ? { categoryBar: { ...theme.categoryBar, ...colorPreset.categoryBar } } : {}),
+      ...(colorPreset.topBar ? { topBar: { ...theme.topBar, ...colorPreset.topBar } } : {}),
+      ...(colorPreset.announcementBar ? { announcementBar: { ...theme.announcementBar, ...colorPreset.announcementBar } } : {}),
+    } as unknown as Partial<StoreTheme>);
   };
 
   return (
     <div className="space-y-2">
       <Divider icon={Store} label="Modelo de negocio" />
       <p className="text-[9px] text-[#5A5A70] px-1 -mt-1">
-        Al elegir un modelo se aplican el layout y paleta recomendados.
+        Aplica layout, paleta, tipografía y tarjetas únicos para cada modelo.
       </p>
-      <div className="space-y-1">
-        {MODELS.map(({ id, label, emoji, desc }) => {
+      <div className="space-y-1.5">
+        {(Object.entries(FULL_BUSINESS_PRESETS) as Array<[BusinessModel, FullBusinessPreset]>).map(([id, fp]) => {
           const active = currentModel === id;
           return (
             <button
               key={id}
               onClick={() => handleModelSelect(id)}
               className={cn(
-                'w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-all',
+                'w-full flex items-center gap-0 rounded-xl text-left transition-all overflow-hidden',
                 active
-                  ? 'bg-emerald-500/10 ring-1 ring-emerald-500/60'
-                  : 'bg-[#141419] ring-1 ring-transparent hover:bg-[#18181E] hover:ring-[#28283A]',
+                  ? 'ring-1 ring-emerald-500/70'
+                  : 'ring-1 ring-transparent hover:ring-[#28283A]',
               )}
             >
-              <span className="text-base flex-shrink-0">{emoji}</span>
-              <div className="flex-1 min-w-0">
-                <p className={cn('text-[11px] font-bold leading-none', active ? 'text-emerald-400' : 'text-[#C8C8DC]')}>{label}</p>
-                <p className="text-[9px] text-[#5A5A70] mt-0.5 truncate">{desc}</p>
+              {/* Color strip */}
+              <div
+                className="w-1.5 self-stretch flex-shrink-0"
+                style={{ backgroundColor: fp.accentColor }}
+              />
+              {/* Content */}
+              <div className={cn(
+                'flex-1 flex items-center gap-3 px-3 py-2.5',
+                active ? 'bg-emerald-500/10' : 'bg-[#141419] hover:bg-[#18181E]',
+              )}>
+                <span className="text-base flex-shrink-0">{fp.emoji}</span>
+                <div className="flex-1 min-w-0">
+                  <p className={cn('text-[11px] font-bold leading-none', active ? 'text-emerald-400' : 'text-[#C8C8DC]')}>
+                    {fp.label}
+                  </p>
+                  <p className="text-[9px] text-[#5A5A70] mt-0.5 truncate">{fp.desc}</p>
+                  <div className="flex gap-1 mt-1.5 flex-wrap">
+                    {fp.tags.map((tag) => (
+                      <span key={tag} className="text-[8px] px-1.5 py-0.5 rounded-md bg-[#1E1E2A] text-[#44445A] font-mono leading-none">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                {active && <span className="text-[10px] font-black text-emerald-400 flex-shrink-0">✓</span>}
               </div>
-              {active && <span className="text-[10px] font-black text-emerald-400 flex-shrink-0">✓</span>}
             </button>
           );
         })}
@@ -303,15 +691,11 @@ function BusinessModelSection({
 // Preview visual del layout seleccionado
 function LayoutPreview({ current }: { current: LayoutMode }) {
   return (
-    <div className="rounded-xl bg-[#141419] p-2 flex gap-1.5 h-14 items-stretch overflow-hidden">
+    <div className="rounded-xl bg-[#0C0C10] p-3 h-[80px] flex gap-2 overflow-hidden">
       {current === 'default' && (
         <>
           <div className="flex-1 rounded-md bg-[#252534]" />
-          <div className="flex flex-col gap-1 flex-1">
-            <div className="flex-1 rounded bg-[#1C1C28]" />
-            <div className="flex-1 rounded bg-[#1C1C28]" />
-            <div className="flex-1 rounded bg-[#1C1C28]" />
-          </div>
+          <div className="flex-1 rounded bg-[#1C1C28]" />
         </>
       )}
       {current === 'centered' && (
@@ -346,13 +730,29 @@ function LayoutPreview({ current }: { current: LayoutMode }) {
 // ─── ColorsTab ────────────────────────────────────────────────────────────────
 // Ahora con swatches de presets primero, luego pickers individuales
 
-function ColorsTab({ theme, patch }: { theme: StoreTheme; patch: (p: Partial<StoreTheme['colors']>) => void }) {
+function ColorsTab({ theme, patch, update }: {
+  theme: StoreTheme;
+  patch: (p: Partial<StoreTheme['colors']>) => void;
+  update: (p: Partial<StoreTheme>) => void;
+}) {
+  const handlePresetSelect = (preset: PresetEntry) => {
+    update({
+      colors: { ...theme.colors, ...preset.colors },
+      ...(preset.navbar          ? { navbar:          { ...theme.navbar,          ...preset.navbar          } } : {}),
+      ...(preset.buttons         ? { buttons:         { ...theme.buttons,         ...preset.buttons         } } : {}),
+      ...(preset.banners         ? { banners:         { ...theme.banners,         ...preset.banners         } } : {}),
+      ...(preset.categoryBar     ? { categoryBar:     { ...theme.categoryBar,     ...preset.categoryBar     } } : {}),
+      ...(preset.topBar          ? { topBar:          { ...theme.topBar,          ...preset.topBar          } } : {}),
+      ...(preset.announcementBar ? { announcementBar: { ...theme.announcementBar, ...preset.announcementBar } } : {}),
+    });
+  };
+
   return (
     <div className="space-y-2">
 
-      {/* Paletas rápidas — igual a la imagen */}
+      {/* Paletas rápidas */}
       <Divider icon={Sparkles} label="Paletas predefinidas" />
-      <ColorPresetsGrid current={theme.colors} onSelect={patch} />
+      <ColorPresetsGrid current={theme.colors} onSelect={handlePresetSelect} />
 
       {/* Color primario + secundario */}
       <Divider icon={Palette} label="Acento" />
@@ -586,6 +986,172 @@ function TypographyTab({ theme, patch }: { theme: StoreTheme; patch: (p: Partial
   );
 }
 
+// ─── Navbar variant picker ────────────────────────────────────────────────────
+
+type NavbarVariantId = NonNullable<StoreTheme['navbar']['variant']>;
+
+const NAVBAR_VARIANTS: Array<{ id: NavbarVariantId; label: string; desc: string }> = [
+  { id: 'classic',    label: 'Clásico',    desc: 'Top bar + logo + barra de nav' },
+  { id: 'horizontal', label: 'Horizontal', desc: 'Todo en una sola fila'         },
+  { id: 'centered',   label: 'Centrado',   desc: 'Logo centrado, links abajo'    },
+  { id: 'bold',       label: 'Bold',       desc: 'Header con fondo de acento'    },
+  { id: 'minimal',    label: 'Minimal',    desc: 'Solo logo e iconos'            },
+  { id: 'stacked',    label: 'Apilado',    desc: 'Anuncio + búsqueda grande'     },
+];
+
+function NavbarVariantPreview({ id, accent }: { id: NavbarVariantId; accent: string }) {
+  const bg = '#1C1C28';
+  const dim = '#2A2A3A';
+  const dimLt = '#353548';
+
+  if (id === 'classic') return (
+    <div className="w-full h-full flex flex-col gap-px p-1 overflow-hidden">
+      <div className="h-1.5 rounded-sm w-full" style={{ backgroundColor: dim }} />
+      <div className="flex items-center gap-1 flex-1">
+        <div className="w-3.5 h-2.5 rounded-sm" style={{ backgroundColor: dimLt }} />
+        <div className="flex-1 h-2 rounded-sm" style={{ backgroundColor: dim }} />
+        <div className="flex gap-0.5">
+          <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: dimLt }} />
+          <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: dimLt }} />
+        </div>
+      </div>
+      <div className="flex items-center gap-1 h-2.5 rounded-sm px-1" style={{ backgroundColor: accent + '30' }}>
+        <div className="w-2.5 h-1.5 rounded-sm" style={{ backgroundColor: accent }} />
+        <div className="w-1.5 h-1 rounded-sm" style={{ backgroundColor: dimLt }} />
+        <div className="w-1.5 h-1 rounded-sm" style={{ backgroundColor: dimLt }} />
+      </div>
+      <div className="h-1 rounded-sm w-full" style={{ backgroundColor: accent + '60' }} />
+    </div>
+  );
+
+  if (id === 'horizontal') return (
+    <div className="w-full h-full flex flex-col gap-px p-1">
+      <div className="h-1.5 rounded-sm w-full" style={{ backgroundColor: dim }} />
+      <div className="flex items-center gap-1 flex-1">
+        <div className="w-3 h-2 rounded-sm" style={{ backgroundColor: dimLt }} />
+        <div className="w-px h-3 mx-0.5" style={{ backgroundColor: dimLt }} />
+        <div className="w-2 h-1.5 rounded-sm" style={{ backgroundColor: accent }} />
+        <div className="w-1.5 h-1 rounded-sm" style={{ backgroundColor: dimLt }} />
+        <div className="w-1.5 h-1 rounded-sm" style={{ backgroundColor: dimLt }} />
+        <div className="flex-1" />
+        <div className="w-5 h-2 rounded-sm" style={{ backgroundColor: dim }} />
+        <div className="flex gap-0.5">
+          <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: dimLt }} />
+          <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: dimLt }} />
+        </div>
+      </div>
+    </div>
+  );
+
+  if (id === 'centered') return (
+    <div className="w-full h-full flex flex-col gap-px p-1">
+      <div className="flex items-center flex-1">
+        <div className="w-2 h-1 rounded-sm" style={{ backgroundColor: dim }} />
+        <div className="flex-1 flex justify-center">
+          <div className="w-4 h-2.5 rounded-sm" style={{ backgroundColor: dimLt }} />
+        </div>
+        <div className="flex gap-0.5">
+          <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: dimLt }} />
+          <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: dimLt }} />
+        </div>
+      </div>
+      <div className="h-px w-full" style={{ backgroundColor: dimLt }} />
+      <div className="flex items-center justify-center gap-1 h-3">
+        <div className="w-2 h-1 rounded-sm" style={{ backgroundColor: accent }} />
+        <div className="w-px h-2" style={{ backgroundColor: dim }} />
+        <div className="w-1.5 h-1 rounded-sm" style={{ backgroundColor: dimLt }} />
+        <div className="w-1.5 h-1 rounded-sm" style={{ backgroundColor: dimLt }} />
+        <div className="w-6 h-2 rounded-full" style={{ backgroundColor: dim }} />
+      </div>
+    </div>
+  );
+
+  if (id === 'bold') return (
+    <div className="w-full h-full flex flex-col gap-px p-1">
+      <div className="h-1.5 rounded-sm w-full" style={{ backgroundColor: dim }} />
+      <div className="flex items-center gap-1 flex-1 rounded-sm px-1" style={{ backgroundColor: accent + '50' }}>
+        <div className="w-3 h-2 rounded-sm bg-white/20" />
+        <div className="flex-1 h-2 rounded-sm bg-white/15" />
+        <div className="flex gap-0.5">
+          <div className="w-1.5 h-1.5 rounded-full bg-white/30" />
+          <div className="w-1.5 h-1.5 rounded-full bg-white/30" />
+        </div>
+      </div>
+      <div className="flex items-center gap-1 h-2.5 rounded-sm px-1" style={{ backgroundColor: dim }}>
+        <div className="w-2.5 h-1.5 rounded-sm" style={{ backgroundColor: accent }} />
+        <div className="w-1.5 h-1 rounded-sm" style={{ backgroundColor: dimLt }} />
+        <div className="w-1.5 h-1 rounded-sm" style={{ backgroundColor: dimLt }} />
+      </div>
+    </div>
+  );
+
+  if (id === 'minimal') return (
+    <div className="w-full h-full flex items-center gap-1 p-1">
+      <div className="w-4 h-2.5 rounded-sm" style={{ backgroundColor: dimLt }} />
+      <div className="flex-1" />
+      <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: dimLt }} />
+      <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: dimLt }} />
+      <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: accent }} />
+      <div className="flex flex-col gap-px">
+        <div className="w-2 h-px rounded" style={{ backgroundColor: dimLt }} />
+        <div className="w-2 h-px rounded" style={{ backgroundColor: dimLt }} />
+        <div className="w-2 h-px rounded" style={{ backgroundColor: dimLt }} />
+      </div>
+    </div>
+  );
+
+  if (id === 'stacked') return (
+    <div className="w-full h-full flex flex-col gap-px p-1">
+      <div className="flex items-center justify-center h-2 rounded-sm" style={{ backgroundColor: accent + '60' }}>
+        <div className="w-8 h-1 rounded-sm bg-white/30" />
+      </div>
+      <div className="flex items-center gap-1 flex-1">
+        <div className="w-3 h-2 rounded-sm" style={{ backgroundColor: dimLt }} />
+        <div className="flex-1 h-2 rounded-full" style={{ backgroundColor: dim }} />
+        <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: dimLt }} />
+      </div>
+      <div className="flex items-center gap-1 h-2.5 rounded-sm px-1" style={{ backgroundColor: accent + '30' }}>
+        <div className="w-2.5 h-1.5 rounded-sm" style={{ backgroundColor: accent }} />
+        <div className="w-1.5 h-1 rounded-sm" style={{ backgroundColor: dimLt }} />
+        <div className="w-1.5 h-1 rounded-sm" style={{ backgroundColor: dimLt }} />
+      </div>
+    </div>
+  );
+
+  return null;
+}
+
+function NavbarVariantPicker({ value, accent, onChange }: {
+  value: NavbarVariantId;
+  accent: string;
+  onChange: (v: NavbarVariantId) => void;
+}) {
+  return (
+    <div className="grid grid-cols-3 gap-1.5">
+      {NAVBAR_VARIANTS.map(({ id, label, desc }) => {
+        const selected = value === id;
+        return (
+          <button key={id} onClick={() => onChange(id)}
+            className={cn(
+              'group text-left rounded-xl p-1.5 pb-2 transition-all',
+              selected
+                ? 'bg-emerald-500/10 ring-1 ring-emerald-500/60'
+                : 'bg-[#141419] hover:bg-[#18181E] ring-1 ring-transparent hover:ring-[#28283A]',
+            )}>
+            <div className="rounded-lg overflow-hidden mb-1.5 h-[52px] bg-[#0C0C10]">
+              <NavbarVariantPreview id={id} accent={accent} />
+            </div>
+            <p className={cn('text-[10px] font-semibold leading-none', selected ? 'text-emerald-400' : 'text-[#C8C8DC]')}>
+              {label}
+            </p>
+            <p className="text-[8px] text-[#5A5A70] mt-0.5 leading-tight">{desc}</p>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 function NavbarTab({ theme, patch, patchTopBar, patchCategoryBar, patchAnnouncement }: {
   theme: StoreTheme;
   patch: (p: Partial<StoreTheme['navbar']>) => void;
@@ -595,6 +1161,12 @@ function NavbarTab({ theme, patch, patchTopBar, patchCategoryBar, patchAnnouncem
 }) {
   return (
     <div className="space-y-2">
+      <Divider icon={Layout} label="Diseño de navbar" />
+      <NavbarVariantPicker
+        value={theme.navbar.variant || 'classic'}
+        accent={theme.navbar.activeColor}
+        onChange={(v) => patch({ variant: v })}
+      />
       <Divider icon={Layout} label="Header principal" />
       <Group>
         <ColorRow label="Fondo"   value={theme.navbar.backgroundColor} onChange={(v) => patch({ backgroundColor: v })} />
@@ -825,6 +1397,203 @@ function LoginTab({ theme, patch }: { theme: StoreTheme; patch: (p: Partial<Stor
   );
 }
 
+function ButtonsTab({ theme, patch }: { theme: StoreTheme; patch: (p: Partial<StoreTheme['buttons']>) => void }) {
+  const cfg = theme.buttons || {};
+  const hoverEffects = [
+    { value: 'fade', label: 'Fade (desvanecimiento)' },
+    { value: 'scale', label: 'Scale (escala)' },
+    { value: 'lift', label: 'Lift (elevar)' },
+    { value: 'none', label: 'Sin efecto' },
+  ];
+  const borderRadiusValues = [
+    { value: '0px', label: 'Cuadrado' },
+    { value: '4px', label: 'Ligeramente redondeado' },
+    { value: '6px', label: 'Default (pequeño)' },
+    { value: '8px', label: 'Redondeado' },
+    { value: '12px', label: 'Muy redondeado' },
+    { value: '24px', label: 'Píldora' },
+  ];
+
+  return (
+    <div className="space-y-2">
+      <Divider icon={Zap} label="Color y estilo" />
+      <Group>
+        <ColorRow label="Color primario" value={cfg.primaryColor || '#0D6E6E'} onChange={(v) => patch({ primaryColor: v })} />
+        <Sep />
+        <ColorRow label="Color hover" value={cfg.hoverColor || '#0A5555'} onChange={(v) => patch({ hoverColor: v })} />
+      </Group>
+      
+      <Divider icon={SlidersHorizontal} label="Forma" />
+      <Group>
+        <Select label="Border radius" value={cfg.borderRadius || '6px'} options={borderRadiusValues}
+          onChange={(v) => patch({ borderRadius: v })} />
+      </Group>
+
+      <Divider icon={Sparkles} label="Interacción" />
+      <Group>
+        <Select label="Efecto hover" value={cfg.hoverEffect || 'fade'} options={hoverEffects}
+          onChange={(v) => patch({ hoverEffect: v as 'fade' | 'scale' | 'lift' | 'none' })} />
+        <Sep />
+        <Toggle label="Sombra" description="Agregar sombra al botón" value={cfg.shadow || false} onChange={(v) => patch({ shadow: v })} />
+      </Group>
+
+      <Divider icon={Eye} label="Preview" />
+      <div className="rounded-xl bg-[#141419] px-4 py-4 flex gap-2">
+        <button className="px-4 py-2 text-sm font-medium text-white rounded transition-all"
+          style={{
+            backgroundColor: cfg.primaryColor || '#0D6E6E',
+            borderRadius: cfg.borderRadius || '6px',
+            boxShadow: cfg.shadow ? '0 2px 8px rgba(0,0,0,0.2)' : 'none',
+          }}
+          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = cfg.hoverColor || '#0A5555'}
+          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = cfg.primaryColor || '#0D6E6E'}>
+          Botón
+        </button>
+      </div>
+    </div>
+  );
+}
+
+const BANNER_PREVIEW_IMAGE = 'https://images.unsplash.com/photo-1583607314031-76f40f069cce?w=600&q=80';
+
+const HERO_HEIGHT_OPTS = [
+  { value: '300px', label: '300px' },
+  { value: '380px', label: '380px' },
+  { value: '420px', label: '420px' },
+  { value: '480px', label: '480px' },
+  { value: '520px', label: '520px' },
+  { value: '580px', label: '580px' },
+  { value: '640px', label: '640px' },
+  { value: '720px', label: '720px' },
+  { value: '80vh',  label: '80vh'  },
+  { value: '90vh',  label: '90vh'  },
+  { value: '100vh', label: '100vh — pantalla completa' },
+];
+
+const HERO_WIDTH_OPTS = [
+  { value: '100%',   label: '100% — ancho completo' },
+  { value: '1320px', label: '1320px'                },
+  { value: '1200px', label: '1200px'                },
+  { value: '1080px', label: '1080px'                },
+  { value: '960px',  label: '960px'                 },
+  { value: '800px',  label: '800px'                 },
+  { value: '75%',    label: '75%'                   },
+  { value: '60%',    label: '60%'                   },
+];
+
+const BRAND_BANNER_HEIGHT_OPTS = [
+  { value: '100px', label: '100px — compacto' },
+  { value: '140px', label: '140px'            },
+  { value: '180px', label: '180px'            },
+  { value: '200px', label: '200px'            },
+  { value: '240px', label: '240px'            },
+  { value: '280px', label: '280px'            },
+  { value: '320px', label: '320px — grande'  },
+];
+
+const BORDER_RADIUS_OPTS = [
+  { value: '0px',  label: 'Sin redondeo'             },
+  { value: '4px',  label: 'Ligeramente redondeado'   },
+  { value: '8px',  label: 'Redondeado'               },
+  { value: '12px', label: 'Muy redondeado'           },
+  { value: '16px', label: 'Extra redondeado'         },
+];
+
+function BannersTab({ theme, patch }: { theme: StoreTheme; patch: (p: Partial<StoreTheme['banners']>) => void }) {
+  const cfg = theme.banners || {};
+  const layout = theme.layout ?? 'default';
+  const layoutHeroHeight = theme.layoutSettings?.[layout as keyof typeof theme.layoutSettings]?.heroHeight;
+  const effectiveHeroHeight = cfg.heroHeight || layoutHeroHeight || '520px';
+
+  return (
+    <div className="space-y-2">
+
+      {/* ── Hero principal ── */}
+      <Divider icon={ImageIcon} label="Hero principal" />
+      <Group>
+        <Select
+          label="Altura"
+          value={effectiveHeroHeight}
+          options={HERO_HEIGHT_OPTS}
+          onChange={(v) => patch({ heroHeight: v })}
+        />
+        <Sep />
+        <Select
+          label="Anchura máxima"
+          value={cfg.heroMaxWidth || '100%'}
+          options={HERO_WIDTH_OPTS}
+          onChange={(v) => patch({ heroMaxWidth: v })}
+        />
+        <Sep />
+        <Select
+          label="Border radius"
+          value={cfg.borderRadius || '0px'}
+          options={BORDER_RADIUS_OPTS}
+          onChange={(v) => patch({ borderRadius: v })}
+        />
+      </Group>
+
+      {/* ── Banner de marca ── */}
+      <Divider icon={Layers} label="Banner de marca / categoría" />
+      <Group>
+        <Select
+          label="Altura"
+          value={cfg.brandBannerHeight || '200px'}
+          options={BRAND_BANNER_HEIGHT_OPTS}
+          onChange={(v) => patch({ brandBannerHeight: v })}
+        />
+      </Group>
+
+      {/* ── Color y gradiente ── */}
+      <Divider icon={Palette} label="Color de fondo (sin imagen)" />
+      <Group>
+        <ColorRow label="Color primario" value={cfg.primaryColor || '#0D6E6E'} onChange={(v) => patch({ primaryColor: v })} />
+        <Sep />
+        <div className="space-y-1">
+          <p className="text-[10px] text-[#686878]">Gradiente CSS</p>
+          <TextInput value={cfg.gradient || ''} onChange={(v) => patch({ gradient: v })} placeholder="linear-gradient(135deg, #0D6E6E 0%, #0A5555 100%)" />
+        </div>
+      </Group>
+
+      <Divider icon={Type} label="Texto" />
+      <Group>
+        <ColorRow label="Color de texto" value={cfg.textColor || '#FFFFFF'} onChange={(v) => patch({ textColor: v })} />
+      </Group>
+
+      {/* ── Preview hero ── */}
+      <Divider icon={Eye} label="Preview hero" />
+      <div
+        className="relative overflow-hidden mx-auto"
+        style={{
+          height: '120px',
+          maxWidth: cfg.heroMaxWidth === '100%' ? '100%' : cfg.heroMaxWidth || '100%',
+          borderRadius: cfg.borderRadius || '0px',
+          backgroundColor: cfg.primaryColor || '#0D6E6E',
+        }}
+      >
+        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${BANNER_PREVIEW_IMAGE})` }} />
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.22) 55%, transparent 100%)' }} />
+        <div className="absolute bottom-0 left-0 right-0 px-3 pb-3">
+          <p className="text-sm font-bold leading-tight" style={{ color: cfg.textColor || '#FFFFFF' }}>Relojes Premium</p>
+          <p className="text-[10px] mt-0.5" style={{ color: cfg.textColor || '#FFFFFF', opacity: 0.85 }}>Precisión y diseño atemporal.</p>
+        </div>
+      </div>
+
+      {/* ── Preview brand banner ── */}
+      <Divider icon={Eye} label="Preview banner de marca" />
+      <div
+        className="overflow-hidden flex items-center justify-center rounded-2xl"
+        style={{
+          height: cfg.brandBannerHeight || '200px',
+          background: cfg.gradient || `linear-gradient(135deg, ${cfg.primaryColor || '#0D6E6E'} 0%, #1A1A1A 100%)`,
+        }}
+      >
+        <p className="text-base font-bold" style={{ color: cfg.textColor || '#FFFFFF' }}>Colección destacada</p>
+      </div>
+    </div>
+  );
+}
+
 // ─── Main panel ───────────────────────────────────────────────────────────────
 
 export function ThemeEditorPanel() {
@@ -895,7 +1664,7 @@ export function ThemeEditorPanel() {
         {/* Content */}
         <div className="flex-1 overflow-y-auto px-3 pb-6">
           {activeTab === 'branding'   && <BrandingTab    theme={theme} patch={(v) => patch('branding', v)} />}
-          {activeTab === 'colors'     && <ColorsTab      theme={theme} patch={(v) => patch('colors', v)} />}
+          {activeTab === 'colors'     && <ColorsTab      theme={theme} patch={(v) => patch('colors', v)} update={(p) => updateTheme(p as Parameters<typeof updateTheme>[0])} />}
           {activeTab === 'typography' && <TypographyTab  theme={theme} patch={(v) => patch('typography', v)} />}
           {activeTab === 'navbar'     && (
             <NavbarTab
@@ -906,6 +1675,8 @@ export function ThemeEditorPanel() {
               patchAnnouncement={(v) => patch('announcementBar', v)}
             />
           )}
+          {activeTab === 'buttons'    && <ButtonsTab     theme={theme} patch={(v) => patch('buttons', v)} />}
+          {activeTab === 'banners'    && <BannersTab     theme={theme} patch={(v) => patch('banners', v)} />}
           {activeTab === 'layout' && (
             <div className="space-y-4">
               <LayoutSection

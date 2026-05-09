@@ -40,10 +40,7 @@ export function PromotionsSection({ section }: { section: HomeSection }) {
 // ─── 4. Categorías (banners de categorías) ───────────────────────────────────
 export function CategoriesSection({ section }: { section: HomeSection }) {
   return (
-    <section className="px-4 sm:px-6 lg:px-20 py-10 bg-[var(--bg)]">
-      {section.title && (
-        <SectionHeader title={section.title} subtitle={section.subtitle} eyebrow="CATEGORÍAS" viewAllHref="/products" />
-      )}
+    <section className="bg-[var(--bg)]">
       <CategorySection />
     </section>
   );
@@ -152,7 +149,8 @@ export function BrandBannerSection({ section }: { section: HomeSection }) {
     <section className="px-4 sm:px-6 lg:px-20 py-6">
       <Link
         href={section.bannerLinkUrl || '#'}
-        className="block rounded-2xl overflow-hidden relative h-[140px] lg:h-[200px] bg-gradient-to-r from-[var(--primary)] to-[var(--text-dark)]"
+        className="block rounded-2xl overflow-hidden relative bg-gradient-to-r from-[var(--primary)] to-[var(--text-dark)]"
+        style={{ height: 'var(--brand-banner-h, 200px)' }}
       >
         {section.bannerImageUrl ? (
           <Image src={section.bannerImageUrl} alt="Brand banner" fill className="object-cover" unoptimized />

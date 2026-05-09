@@ -28,47 +28,39 @@ const SECTION_MAP: Record<HomeSectionId, (p: { section: HomeSection }) => React.
 
 function EditorialSidebar() {
   return (
-    <aside className="hidden lg:block space-y-6">
-      <div className="rounded-3xl border border-[var(--border)] bg-[var(--bg-light)] p-6 shadow-sm">
-        <p className="text-[10px] uppercase tracking-[0.3em] text-[var(--text-muted)] mb-4">Columna secundaria</p>
-        <h2 className="text-xl font-semibold text-[var(--text-dark)] mb-3">Contenido editorial</h2>
-        <p className="text-sm leading-6 text-[var(--text-muted)]">
-          Aquí encontrarás recursos rápidos, categorías destacadas y productos resaltados que complementan el flujo principal.
-        </p>
-      </div>
-
-      <div className="rounded-3xl border border-[var(--border)] bg-[var(--bg-light)] p-6">
-        <p className="text-xs uppercase tracking-[0.26em] text-[var(--text-muted)] mb-4">Tendencias</p>
-        <div className="grid grid-cols-2 gap-3">
+    <aside className="hidden lg:block space-y-4 sticky top-4">
+      <div className="rounded-2xl border border-[var(--border)] p-5 shadow-sm" style={{ backgroundColor: 'var(--sidebar-bg, var(--bg-light))' }}>
+        <p className="text-[10px] uppercase tracking-[0.3em] text-[var(--text-muted)] mb-3">Tendencias</p>
+        <div className="grid grid-cols-2 gap-2">
           {['Nuevas', 'Populares', 'Top ventas', 'Ofertas'].map((item) => (
-            <div key={item} className="rounded-2xl bg-white/90 border border-[var(--border)] p-3 text-center text-sm font-medium text-[var(--text-dark)]">
+            <div key={item} className="rounded-xl border border-[var(--border)] p-2.5 text-center text-xs font-medium text-[var(--text-dark)]" style={{ backgroundColor: 'var(--bg-card)' }}>
               {item}
             </div>
           ))}
         </div>
       </div>
 
-      <div className="rounded-3xl border border-[var(--border)] bg-[var(--bg-light)] p-6">
-        <p className="text-xs uppercase tracking-[0.26em] text-[var(--text-muted)] mb-4">Colecciones</p>
-        <div className="space-y-3">
+      <div className="rounded-2xl border border-[var(--border)] p-5" style={{ backgroundColor: 'var(--sidebar-bg, var(--bg-light))' }}>
+        <p className="text-[10px] uppercase tracking-[0.26em] text-[var(--text-muted)] mb-3">Colecciones</p>
+        <div className="space-y-2">
           {['Hogar', 'Moda', 'Electrónica', 'Regalos'].map((label) => (
-            <div key={label} className="rounded-2xl border border-[var(--border)] bg-white/90 px-4 py-3 text-sm text-[var(--text-dark)]">
+            <div key={label} className="rounded-xl border border-[var(--border)] px-3 py-2.5 text-sm text-[var(--text-dark)] cursor-pointer hover:border-[var(--primary)] transition-colors" style={{ backgroundColor: 'var(--bg-card)' }}>
               {label}
             </div>
           ))}
         </div>
       </div>
 
-      <div className="rounded-3xl border border-[var(--border)] bg-[var(--bg-light)] p-6">
-        <p className="text-xs uppercase tracking-[0.26em] text-[var(--text-muted)] mb-4">Recomendado</p>
-        <div className="space-y-3">
-          <div className="rounded-3xl bg-white/95 border border-[var(--border)] p-4">
-            <p className="text-sm font-semibold text-[var(--text-dark)] mb-2">Gorra urbana</p>
-            <p className="text-xs text-[var(--text-muted)]">Lo más visto esta semana.</p>
+      <div className="rounded-2xl border border-[var(--border)] p-5" style={{ backgroundColor: 'var(--sidebar-bg, var(--bg-light))' }}>
+        <p className="text-[10px] uppercase tracking-[0.26em] text-[var(--text-muted)] mb-3">Recomendado</p>
+        <div className="space-y-2">
+          <div className="rounded-xl border border-[var(--border)] p-3 cursor-pointer hover:border-[var(--primary)] transition-colors" style={{ backgroundColor: 'var(--bg-card)' }}>
+            <p className="text-sm font-semibold text-[var(--text-dark)]">Gorra urbana</p>
+            <p className="text-xs text-[var(--text-muted)] mt-0.5">Lo más visto esta semana.</p>
           </div>
-          <div className="rounded-3xl bg-white/95 border border-[var(--border)] p-4">
-            <p className="text-sm font-semibold text-[var(--text-dark)] mb-2">Accesorios</p>
-            <p className="text-xs text-[var(--text-muted)]">Impresiona con estilo.</p>
+          <div className="rounded-xl border border-[var(--border)] p-3 cursor-pointer hover:border-[var(--primary)] transition-colors" style={{ backgroundColor: 'var(--bg-card)' }}>
+            <p className="text-sm font-semibold text-[var(--text-dark)]">Accesorios</p>
+            <p className="text-xs text-[var(--text-muted)] mt-0.5">Impresiona con estilo.</p>
           </div>
         </div>
       </div>
@@ -81,27 +73,43 @@ export default function HomePage() {
   const sections = theme.homeSections ?? [];
   const layout = theme.layout ?? 'default';
   const isEditorial = layout === 'editorial';
-  const splitIndex = sections.findIndex((section) => section.id === 'categories');
-  const topSections = splitIndex === -1 ? sections : sections.slice(0, splitIndex);
-  const bottomSections = splitIndex === -1 ? [] : sections.slice(splitIndex);
+  const sidebarPosition = theme.layoutSettings?.editorial?.sidebarPosition ?? 'right';
+  const sidebarWidth = theme.layoutSettings?.editorial?.sidebarWidth ?? '360px';
+
+  // Editorial: everything up to and including mainBanner goes in the 2-col grid
+  // Everything after mainBanner goes below in full width
+  const mainBannerIndex = sections.findIndex((s) => s.id === 'mainBanner');
+  const splitAt = isEditorial ? (mainBannerIndex === -1 ? sections.length : mainBannerIndex + 1) : sections.length;
+  const topSections = isEditorial ? sections.slice(0, splitAt) : [];
+  const bottomSections = isEditorial ? sections.slice(splitAt) : sections;
+
   const wrappedTop = layout === 'default' || layout === 'centered';
   const wrappedBottom = layout === 'default' || layout === 'centered';
 
   return (
     <>
       {isEditorial && topSections.length > 0 ? (
-        <div className={cn('space-y-8 lg:grid lg:grid-cols-[minmax(0,2fr)_360px] lg:gap-8 lg:items-start', wrappedTop && 'section-container')}>
-          <div className="space-y-8">
+        <div
+          className={cn(
+            'space-y-8 lg:grid lg:gap-8 lg:items-start',
+            sidebarPosition === 'left'
+              ? `lg:grid-cols-[${sidebarWidth}_minmax(0,1fr)]`
+              : `lg:grid-cols-[minmax(0,1fr)_${sidebarWidth}]`,
+            wrappedTop && 'section-container',
+          )}
+        >
+          {sidebarPosition === 'left' && <EditorialSidebar />}
+          <div className="space-y-8 min-w-0">
             {topSections.map((section) => {
               const Component = SECTION_MAP[section.id];
               if (!Component) return null;
               return <Component key={section.id} section={section} />;
             })}
           </div>
-          <EditorialSidebar />
+          {sidebarPosition === 'right' && <EditorialSidebar />}
         </div>
       ) : (
-        <div className={cn('space-y-8', wrappedTop && 'section-container')}>
+        <div className={cn('space-y-8', wrappedBottom && 'section-container')}>
           {sections.map((section) => {
             const Component = SECTION_MAP[section.id];
             if (!Component) return null;

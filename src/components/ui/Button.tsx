@@ -14,10 +14,10 @@ interface ButtonProps {
 }
 
 const variantStyles: Record<string, string> = {
-  primary: 'bg-[var(--primary)] text-white hover:opacity-90',
-  secondary: 'bg-[var(--bg-light)] text-[var(--text-dark)] hover:bg-gray-200',
-  outline: 'border border-[var(--border)] text-[var(--text-dark)] hover:bg-gray-50',
-  ghost: 'text-[var(--text-muted)] hover:bg-gray-100',
+  primary: 'bg-[var(--btn-primary)] text-white hover:bg-[var(--btn-hover)] transition-all',
+  secondary: 'bg-[var(--bg-light)] text-[var(--text-dark)] hover:bg-[var(--bg-warm)]',
+  outline: 'border border-[var(--border)] text-[var(--text-dark)] hover:bg-[var(--bg-light)]',
+  ghost: 'text-[var(--text-muted)] hover:bg-[var(--bg-light)]',
 };
 
 const sizeStyles: Record<string, string> = {
@@ -42,7 +42,9 @@ export default function Button({
       onClick={onClick}
       disabled={disabled}
       className={cn(
-        'rounded-lg font-medium transition-colors',
+        'font-medium transition-all',
+        'rounded-[var(--btn-radius)]',
+        `shadow-[var(--btn-shadow)]`,
         variantStyles[variant],
         sizeStyles[size],
         fullWidth && 'w-full',

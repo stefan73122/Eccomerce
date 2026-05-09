@@ -78,11 +78,34 @@
 }
 
 /* ── Utility ─────────────────────────────────────────────────────── */
+/* section-container only constrains max-width; sections handle their own padding */
 .section-container {
   width: 100%;
   max-width: var(--layout-max);
   margin-left: auto;
   margin-right: auto;
-  padding-left: var(--layout-padding-x);
-  padding-right: var(--layout-padding-x);
+}
+
+/* Hero carousel — height and max-width driven by CSS vars */
+@media (min-width: 1024px) {
+  .hero-carousel {
+    height: var(--hero-height, 520px);
+    max-width: var(--banner-max-width, 100%);
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* Centered layout: constrain hero width */
+[data-layout="centered"] .hero-carousel {
+  max-width: var(--layout-max, 960px);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Fullwidth layout: remove section padding */
+[data-layout="fullwidth"] .section-container {
+  max-width: 100%;
+  padding-left: var(--fullwidth-padding-x, 0px);
+  padding-right: var(--fullwidth-padding-x, 0px);
 }

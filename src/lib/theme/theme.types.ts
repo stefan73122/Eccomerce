@@ -79,12 +79,16 @@ export interface StoreTheme {
   };
 
   navbar: {
+    variant?: 'classic' | 'horizontal' | 'centered' | 'bold' | 'minimal' | 'stacked';
     backgroundColor: string;
     textColor: string;
     activeColor: string;
+    hoverColor?: string;
     layout: 'horizontal' | 'centered';
     sticky: boolean;
     showSearch: boolean;
+    borderRadius?: string;
+    shadow?: boolean;
   };
 
   categoryBar: {
@@ -129,10 +133,52 @@ export interface StoreTheme {
     textColor: string;
   };
 
+  buttons: {
+    primaryColor?: string;
+    hoverColor?: string;
+    hoverEffect?: 'fade' | 'scale' | 'lift' | 'none';
+    borderRadius?: string;
+    shadow?: boolean;
+  };
+
+  banners: {
+    primaryColor?: string;
+    gradient?: string;
+    textColor?: string;
+    opacity?: number;
+    borderRadius?: string;
+    heroHeight?: string;
+    heroMaxWidth?: string;
+    brandBannerHeight?: string;
+  };
+
   /* Nuevos campos ─────────────────────────────────────────── */
   layout: LayoutMode;
   businessModel: BusinessModel;
   homeSections: HomeSection[];
+
+  layoutSettings?: {
+    default?: {
+      heroHeight?: string;
+      containerMaxWidth?: string;
+      sectionGap?: string;
+    };
+    centered?: {
+      heroHeight?: string;
+      containerMaxWidth?: string;
+      paddingX?: string;
+    };
+    editorial?: {
+      heroHeight?: string;
+      sidebarWidth?: string;
+      sidebarBg?: string;
+      sidebarPosition?: 'left' | 'right';
+    };
+    fullwidth?: {
+      heroHeight?: string;
+      paddingX?: string;
+    };
+  };
 }
 
 export type DeepPartial<T> = T extends object
