@@ -15,16 +15,17 @@ import HomeSectionsTab from './HomeSectionsTab';
 
 // ─── Tab config ───────────────────────────────────────────────────────────────
 
-type Tab = 'branding' | 'colors' | 'typography' | 'navbar' | 'home' | 'cards' | 'login';
+type Tab = 'branding' | 'colors' | 'typography' | 'navbar' | 'layout' | 'home' | 'cards' | 'login';
 
 const TABS: Array<{ id: Tab; label: string; icon: React.ElementType }> = [
-  { id: 'branding',   label: 'Marca',   icon: Store    },
-  { id: 'colors',     label: 'Colores', icon: Palette  },
-  { id: 'typography', label: 'Tipo',    icon: Type     },
-  { id: 'navbar',     label: 'Navbar',  icon: Layout   },
-  { id: 'home',       label: 'Home',    icon: Home     },
+  { id: 'branding',   label: 'Marca',   icon: Store      },
+  { id: 'colors',     label: 'Colores', icon: Palette    },
+  { id: 'typography', label: 'Tipo',    icon: Type       },
+  { id: 'navbar',     label: 'Navbar',  icon: Layout     },
+  { id: 'layout',     label: 'Layout',  icon: LayoutGrid },
+  { id: 'home',       label: 'Home',    icon: Home       },
   { id: 'cards',      label: 'Cards',   icon: ShoppingBag },
-  { id: 'login',      label: 'Login',   icon: LogIn    },
+  { id: 'login',      label: 'Login',   icon: LogIn      },
 ];
 
 // ─── Atoms ────────────────────────────────────────────────────────────────────
@@ -214,7 +215,7 @@ const BUSINESS_PRESET_MAP: Record<BusinessModel, { layout: LayoutMode; colors: P
   marketplace: { layout: 'fullwidth', colors: COLOR_PRESETS.find((p) => p.id === 'tech')!.colors    },
 };
 
-function LayoutModelSection({
+function LayoutSection({
   theme,
   update,
 }: {
@@ -222,18 +223,8 @@ function LayoutModelSection({
   update: (patch: Partial<StoreTheme>) => void;
 }) {
   const currentLayout = theme.layout ?? 'default';
-  const currentModel  = theme.businessModel ?? 'general';
-
-  const handleModelSelect = (id: BusinessModel) => {
-    const preset = BUSINESS_PRESET_MAP[id];
-    // Aplica modelo + layout + colores del preset de golpe
-    update({ businessModel: id, layout: preset.layout, colors: preset.colors as StoreTheme['colors'] });
-  };
-
   return (
     <div className="space-y-2">
-
-      {/* ── Layout ── */}
       <Divider icon={LayoutGrid} label="Layout de página" />
       <div className="grid grid-cols-2 gap-2">
         {LAYOUTS.map(({ id, label, desc }) => {
@@ -255,11 +246,28 @@ function LayoutModelSection({
           );
         })}
       </div>
-
-      {/* ── Layout preview visual ── */}
       <LayoutPreview current={currentLayout} />
+    </div>
+  );
+}
 
-      {/* ── Modelo de negocio ── */}
+function BusinessModelSection({
+  theme,
+  update,
+}: {
+  theme: StoreTheme;
+  update: (patch: Partial<StoreTheme>) => void;
+}) {
+  const currentModel = theme.businessModel ?? 'general';
+
+  const handleModelSelect = (id: BusinessModel) => {
+    const preset = BUSINESS_PRESET_MAP[id];
+    // Aplica modelo + layout + colores del preset de golpe
+    update({ businessModel: id, layout: preset.layout, colors: preset.colors as StoreTheme['colors'] });
+  };
+
+  return (
+    <div className="space-y-2">
       <Divider icon={Store} label="Modelo de negocio" />
       <p className="text-[9px] text-[#5A5A70] px-1 -mt-1">
         Al elegir un modelo se aplican el layout y paleta recomendados.
@@ -898,19 +906,23 @@ export function ThemeEditorPanel() {
               patchAnnouncement={(v) => patch('announcementBar', v)}
             />
           )}
-          {activeTab === 'home' && (
+          {activeTab === 'layout' && (
             <div className="space-y-4">
-              <HomeSectionsTab
-                sections={theme.homeSections}
-                onChange={(next) => updateTheme({ homeSections: next } as Parameters<typeof updateTheme>[0])}
+              <LayoutSection
+                theme={theme}
+                update={(p) => updateTheme(p as Parameters<typeof updateTheme>[0])}
               />
-              <div className="mt-2 pt-2" style={{ borderTop: '1px solid #1E1E2A' }}>
-                <LayoutModelSection
-                  theme={theme}
-                  update={(p) => updateTheme(p as Parameters<typeof updateTheme>[0])}
-                />
-              </div>
+              <BusinessModelSection
+                theme={theme}
+                update={(p) => updateTheme(p as Parameters<typeof updateTheme>[0])}
+              />
             </div>
+          )}
+          {activeTab === 'home' && (
+            <HomeSectionsTab
+              sections={theme.homeSections}
+              onChange={(next) => updateTheme({ homeSections: next } as Parameters<typeof updateTheme>[0])}
+            />
           )}
           {activeTab === 'cards' && <CardsTab theme={theme} patch={(v) => patch('productCards', v)} />}
           {activeTab === 'login' && <LoginTab theme={theme} patch={(v) => patch('login', v)} />}
