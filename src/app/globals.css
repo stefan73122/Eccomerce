@@ -1,33 +1,66 @@
 @import "tailwindcss";
 
+/* ── Token base (fallbacks / SSR) ────────────────────────────────── */
 :root {
-  --primary: #0D6E6E;
-  --primary-light: #E6F2F2;
-  --text-dark: #1A1A1A;
-  --text-muted: #666666;
-  --text-light: #888888;
+  --primary:          #0D6E6E;
+  --primary-light:    #E6F2F2;
+  --primary-text:     #FFFFFF;
+  --text-dark:        #1A1A1A;
+  --text-muted:       #666666;
+  --text-light:       #888888;
   --text-placeholder: #999999;
-  --bg-light: #F8F9FA;
-  --bg-warm: #F5F5F0;
-  --bg-card: #F9F9F9;
-  --bg-input: #F0F0F0;
-  --border: #E5E5E5;
-  --border-light: #EAEAEA;
-  --footer-dark: #1A1A1A;
-  --footer-text: #999999;
-  --footer-divider: #333333;
-  --success: #22C55E;
-  --error: #FF3366;
-  --warning: #B8860B;
-  --white: #FFFFFF;
-  --black: #000000;
-  --overlay: rgba(0, 0, 0, 0.4);
+  --bg-light:         #F8F9FA;
+  --bg-warm:          #F5F5F0;
+  --bg-card:          #F9F9F9;
+  --bg-input:         #F0F0F0;
+  --border:           #E5E5E5;
+  --border-light:     #EAEAEA;
+  --footer-dark:      #1A1A1A;
+  --footer-text:      #999999;
+  --footer-divider:   #333333;
+  --success:          #22C55E;
+  --error:            #FF3366;
+  --warning:          #B8860B;
+  --white:            #FFFFFF;
+  --black:            #000000;
+  --overlay:          rgba(0, 0, 0, 0.4);
+
+  /* ThemeProvider injected (fallbacks) */
+  --navbar-bg:        #FFFFFF;
+  --navbar-text:      #1A1A1A;
+  --navbar-active:    #0D6E6E;
+  --card-radius:      12px;
+  --card-img-height:  180px;
+  --btn-radius:       6px;
+  --font-family:      "Inter", sans-serif;
+  --base-font-size:   16px;
+  --bg:               #FFFFFF;
+
+  /* Layout system */
+  --layout-max:        1280px;
+  --layout-padding-x:  clamp(1rem, 4vw, 5rem);
+  --hero-min-h:        80vh;
+  --product-cols:      4;
+  --card-gap:          1px;
 }
 
+/* ── Layout modes ────────────────────────────────────────────────── */
+[data-layout="default"]   { --layout-max: 1320px; --hero-min-h: 80vh;  --layout-padding-x: clamp(1rem, 5vw, 5rem); }
+[data-layout="centered"]  { --layout-max: 1040px; --hero-min-h: 60vh;  --layout-padding-x: clamp(1rem, 4vw, 3rem); }
+[data-layout="editorial"] { --layout-max: 1200px; --hero-min-h: 75vh;  --layout-padding-x: clamp(1rem, 4vw, 5rem); }
+[data-layout="fullwidth"] { --layout-max: 100%;   --hero-min-h: 90vh;  --layout-padding-x: 0; }
+
+/* ── Business model overrides ────────────────────────────────────── */
+[data-model="general"]     { --hero-min-h: 80vh;  --product-cols: 4; --card-gap: 1px;  }
+[data-model="sport"]       { --hero-min-h: 100vh; --product-cols: 3; --card-gap: 2px;  }
+[data-model="fashion"]     { --hero-min-h: 95vh;  --product-cols: 3; --card-gap: 2px;  }
+[data-model="food"]        { --hero-min-h: 70vh;  --product-cols: 4; --card-gap: 1px;  }
+[data-model="street"]      { --hero-min-h: 100vh; --product-cols: 2; --card-gap: 0px;  }
+[data-model="marketplace"] { --hero-min-h: 50vh;  --product-cols: 5; --card-gap: 1px;  }
+
+/* ── Base ────────────────────────────────────────────────────────── */
 @layer base {
-  html, body {
-    height: 100%;
-  }
+  html, body { height: 100%; }
 
   html {
     font-size: var(--base-font-size, 16px);
@@ -44,15 +77,12 @@
   }
 }
 
-/* ─── Theme vars injected by ThemeProvider (fallback here) ──────── */
-:root {
-  --navbar-bg: #FFFFFF;
-  --navbar-text: #1A1A1A;
-  --navbar-active: #0D6E6E;
-  --card-radius: 12px;
-  --card-img-height: 180px;
-  --btn-radius: 6px;
-  --font-family: "Inter", sans-serif;
-  --base-font-size: 16px;
-  --bg: #FFFFFF;
+/* ── Utility ─────────────────────────────────────────────────────── */
+.section-container {
+  width: 100%;
+  max-width: var(--layout-max);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--layout-padding-x);
+  padding-right: var(--layout-padding-x);
 }

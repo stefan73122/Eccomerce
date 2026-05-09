@@ -5,11 +5,12 @@ import {
   X, Store, Palette, Type, Layout, ShoppingBag, LogIn, RotateCcw,
   AlignJustify, Megaphone, Rows3, SlidersHorizontal, MousePointerClick,
   Sparkles, Image as ImageIcon, ChevronDown, Home, LayoutGrid, Eye,
+  Monitor,
 } from 'lucide-react';
 import { useUIStore } from '@/store/useUIStore';
 import { useTheme } from '@/lib/theme/ThemeContext';
 import { cn } from '@/lib/cn';
-import type { StoreTheme } from '@/lib/theme/theme.types';
+import type { StoreTheme, LayoutMode, BusinessModel } from '@/lib/theme/theme.types';
 import HomeSectionsTab from './HomeSectionsTab';
 
 // ─── Tab config ───────────────────────────────────────────────────────────────
@@ -17,20 +18,16 @@ import HomeSectionsTab from './HomeSectionsTab';
 type Tab = 'branding' | 'colors' | 'typography' | 'navbar' | 'home' | 'cards' | 'login';
 
 const TABS: Array<{ id: Tab; label: string; icon: React.ElementType }> = [
-  { id: 'branding',   label: 'Marca',    icon: Store },
-  { id: 'colors',     label: 'Colores',  icon: Palette },
-  { id: 'typography', label: 'Tipo',     icon: Type },
-  { id: 'navbar',     label: 'Navbar',   icon: Layout },
-  { id: 'home',       label: 'Home',     icon: Home },
-  { id: 'cards',      label: 'Cards',    icon: ShoppingBag },
-  { id: 'login',      label: 'Login',    icon: LogIn },
+  { id: 'branding',   label: 'Marca',   icon: Store    },
+  { id: 'colors',     label: 'Colores', icon: Palette  },
+  { id: 'typography', label: 'Tipo',    icon: Type     },
+  { id: 'navbar',     label: 'Navbar',  icon: Layout   },
+  { id: 'home',       label: 'Home',    icon: Home     },
+  { id: 'cards',      label: 'Cards',   icon: ShoppingBag },
+  { id: 'login',      label: 'Login',   icon: LogIn    },
 ];
 
-// ─── Palette ──────────────────────────────────────────────────────────────────
-// bg0: #0C0C10  bg1: #141419  bg2: #1C1C24
-// border: #222230  text: #D8D8E8  muted: #6868808  accent: #10B981
-
-// ─── Atoms ───────────────────────────────────────────────────────────────────
+// ─── Atoms ────────────────────────────────────────────────────────────────────
 
 function Divider({ label, icon: Icon }: { label: string; icon?: React.ElementType }) {
   return (
@@ -43,11 +40,7 @@ function Divider({ label, icon: Icon }: { label: string; icon?: React.ElementTyp
 }
 
 function Group({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="rounded-xl bg-[#141419] px-3 py-2.5 space-y-2">
-      {children}
-    </div>
-  );
+  return <div className="rounded-xl bg-[#141419] px-3 py-2.5 space-y-2">{children}</div>;
 }
 
 function Prop({ label, children }: { label: string; children: React.ReactNode }) {
@@ -61,11 +54,8 @@ function Prop({ label, children }: { label: string; children: React.ReactNode })
 
 function TextInput({ value, onChange, placeholder }: { value: string; onChange: (v: string) => void; placeholder?: string }) {
   return (
-    <input
-      type="text" value={value} placeholder={placeholder}
-      onChange={(e) => onChange(e.target.value)}
-      className="w-full bg-[#1C1C24] border border-[#28283A] rounded-lg px-2.5 h-7 text-[11px] text-[#C8C8DC] placeholder:text-[#3A3A50] outline-none focus:border-[#10B981]/60 transition-colors"
-    />
+    <input type="text" value={value} placeholder={placeholder} onChange={(e) => onChange(e.target.value)}
+      className="w-full bg-[#1C1C24] border border-[#28283A] rounded-lg px-2.5 h-7 text-[11px] text-[#C8C8DC] placeholder:text-[#3A3A50] outline-none focus:border-[#10B981]/60 transition-colors" />
   );
 }
 
@@ -74,25 +64,17 @@ function ColorPill({ value, onChange }: { value: string; onChange: (v: string) =
     <label className="flex items-center gap-1.5 bg-[#1C1C24] border border-[#28283A] rounded-lg px-2 h-7 cursor-pointer shrink-0 hover:border-[#10B981]/40 transition-colors">
       <div className="relative w-3.5 h-3.5 rounded-sm shrink-0 ring-1 ring-white/10">
         <div className="absolute inset-0 rounded-sm" style={{ backgroundColor: value }} />
-        <input type="color" value={value} onChange={(e) => onChange(e.target.value)}
-          className="absolute inset-0 opacity-0 cursor-pointer w-full h-full" />
+        <input type="color" value={value} onChange={(e) => onChange(e.target.value)} className="absolute inset-0 opacity-0 cursor-pointer w-full h-full" />
       </div>
-      <input
-        type="text" value={value} maxLength={7}
-        onChange={(e) => onChange(e.target.value)}
+      <input type="text" value={value} maxLength={7} onChange={(e) => onChange(e.target.value)}
         onClick={(e) => e.stopPropagation()}
-        className="w-[54px] text-[11px] font-mono text-[#A8A8C0] bg-transparent outline-none"
-      />
+        className="w-[54px] text-[11px] font-mono text-[#A8A8C0] bg-transparent outline-none" />
     </label>
   );
 }
 
 function ColorRow({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
-  return (
-    <Prop label={label}>
-      <ColorPill value={value} onChange={onChange} />
-    </Prop>
-  );
+  return <Prop label={label}><ColorPill value={value} onChange={onChange} /></Prop>;
 }
 
 function Toggle({ label, description, value, onChange }: { label: string; description?: string; value: boolean; onChange: (v: boolean) => void }) {
@@ -137,11 +119,273 @@ function Slider({ label, value, unit, min, max, onChange }: { label: string; val
   );
 }
 
-function Sep() {
-  return <div className="h-px bg-[#1E1E2A] -mx-3" />;
+function Sep() { return <div className="h-px bg-[#1E1E2A] -mx-3" />; }
+
+// ─── COLOR PRESETS ────────────────────────────────────────────────────────────
+// Reemplaza las paletas individuales con swatches visuales como en la imagen
+
+const COLOR_PRESETS: Array<{
+  id: string; label: string; swatch: string;
+  colors: Partial<StoreTheme['colors']>;
+}> = [
+  { id: 'default', label: 'Default', swatch: '#0D6E6E',
+    colors: { primary: '#0D6E6E', secondary: '#1A1A1A', background: '#FFFFFF', surface: '#F8F9FA', text: '#1A1A1A', textMuted: '#666666', border: '#E5E5E5' } },
+  { id: 'dark', label: 'Dark', swatch: '#22C55E',
+    colors: { primary: '#22C55E', secondary: '#16A34A', background: '#0F172A', surface: '#111827', text: '#F9FAFB', textMuted: '#9CA3AF', border: '#374151' } },
+  { id: 'minimal', label: 'Minimal', swatch: '#111111',
+    colors: { primary: '#111111', secondary: '#333333', background: '#FFFFFF', surface: '#FAFAFA', text: '#111111', textMuted: '#555555', border: '#E5E5E5' } },
+  { id: 'bold', label: 'Bold', swatch: '#E63946',
+    colors: { primary: '#E63946', secondary: '#C1121F', background: '#FFF8F8', surface: '#FFF0F1', text: '#1A0508', textMuted: '#7A3040', border: '#FCCDD1' } },
+  { id: 'luxury', label: 'Luxury', swatch: '#B8960C',
+    colors: { primary: '#B8960C', secondary: '#9A7C08', background: '#FFFEF9', surface: '#F8F4EF', text: '#1C1200', textMuted: '#7A6820', border: '#E0D4A0' } },
+  { id: 'fresh', label: 'Fresh', swatch: '#0B7A4E',
+    colors: { primary: '#0B7A4E', secondary: '#065F3B', background: '#F0FAF5', surface: '#E8F7EF', text: '#052E1C', textMuted: '#3D7A5A', border: '#A7E8C8' } },
+  { id: 'tech', label: 'Tech', swatch: '#2563EB',
+    colors: { primary: '#2563EB', secondary: '#1D4ED8', background: '#EEF2FF', surface: '#E8EDFA', text: '#0F172A', textMuted: '#4A6090', border: '#BFCFEE' } },
+  { id: 'warm', label: 'Warm', swatch: '#C2410C',
+    colors: { primary: '#C2410C', secondary: '#9A3408', background: '#FFF7F3', surface: '#FFF0E8', text: '#2C1203', textMuted: '#8A4020', border: '#F8C8A8' } },
+];
+
+function ColorPresetsGrid({ current, onSelect }: {
+  current: StoreTheme['colors'];
+  onSelect: (colors: Partial<StoreTheme['colors']>) => void;
+}) {
+  const activeId = COLOR_PRESETS.find((p) => p.colors.primary === current.primary)?.id ?? null;
+
+  return (
+    <div className="grid grid-cols-4 gap-1.5">
+      {COLOR_PRESETS.map((preset) => {
+        const isActive = activeId === preset.id;
+        return (
+          <button
+            key={preset.id}
+            onClick={() => onSelect(preset.colors)}
+            title={preset.label}
+            className={cn(
+              'flex flex-col items-center gap-1.5 py-2 px-1 rounded-xl transition-all',
+              isActive
+                ? 'bg-emerald-500/12 ring-1 ring-emerald-500/60'
+                : 'bg-[#141419] hover:bg-[#18181E] ring-1 ring-transparent hover:ring-[#28283A]',
+            )}
+          >
+            <div
+              className="w-6 h-6 rounded-full"
+              style={{
+                backgroundColor: preset.swatch,
+                boxShadow: isActive ? `0 0 0 2px #10B981` : undefined,
+              }}
+            />
+            <span className={cn('text-[9px] font-semibold text-center leading-tight', isActive ? 'text-emerald-400' : 'text-[#5A5A70]')}>
+              {preset.label}
+            </span>
+          </button>
+        );
+      })}
+    </div>
+  );
 }
 
-// ─── Tab panels ───────────────────────────────────────────────────────────────
+// ─── LAYOUT + MODELO DE NEGOCIO ───────────────────────────────────────────────
+// Estos van en el tab "Home", debajo del drag-and-drop de secciones
+
+const LAYOUTS: Array<{ id: LayoutMode; label: string; desc: string }> = [
+  { id: 'default',   label: 'Default',    desc: 'Hero full + grid asimétrico' },
+  { id: 'centered',  label: 'Centrado',   desc: 'Máx 960px, centrado'        },
+  { id: 'editorial', label: 'Editorial',  desc: 'Col principal + sidebar'     },
+  { id: 'fullwidth', label: 'Full Width', desc: 'Sin límites, inmersivo'       },
+];
+
+const MODELS: Array<{ id: BusinessModel; label: string; emoji: string; desc: string }> = [
+  { id: 'general',     label: 'General',     emoji: '🛒', desc: 'Producto primero (Amazon)'         },
+  { id: 'sport',       label: 'Sport',       emoji: '👟', desc: 'Hero fuerte, branding (Nike)'      },
+  { id: 'fashion',     label: 'Fashion',     emoji: '👗', desc: 'Visual, minimal (Zara)'            },
+  { id: 'food',        label: 'Food',        emoji: '🍔', desc: "Imágenes grandes (McDonald's)"     },
+  { id: 'street',      label: 'Street',      emoji: '🧢', desc: 'Minimal extremo (Supreme)'         },
+  { id: 'marketplace', label: 'Marketplace', emoji: '🛍️', desc: 'Categorías primero (MercadoLibre)' },
+];
+
+// Presets completos: al elegir modelo se aplica todo en conjunto
+const BUSINESS_PRESET_MAP: Record<BusinessModel, { layout: LayoutMode; colors: Partial<StoreTheme['colors']> }> = {
+  general:     { layout: 'default',   colors: COLOR_PRESETS.find((p) => p.id === 'default')!.colors },
+  sport:       { layout: 'fullwidth', colors: COLOR_PRESETS.find((p) => p.id === 'bold')!.colors    },
+  fashion:     { layout: 'centered',  colors: COLOR_PRESETS.find((p) => p.id === 'minimal')!.colors },
+  food:        { layout: 'default',   colors: COLOR_PRESETS.find((p) => p.id === 'warm')!.colors    },
+  street:      { layout: 'editorial', colors: COLOR_PRESETS.find((p) => p.id === 'minimal')!.colors },
+  marketplace: { layout: 'fullwidth', colors: COLOR_PRESETS.find((p) => p.id === 'tech')!.colors    },
+};
+
+function LayoutModelSection({
+  theme,
+  update,
+}: {
+  theme: StoreTheme;
+  update: (patch: Partial<StoreTheme>) => void;
+}) {
+  const currentLayout = theme.layout ?? 'default';
+  const currentModel  = theme.businessModel ?? 'general';
+
+  const handleModelSelect = (id: BusinessModel) => {
+    const preset = BUSINESS_PRESET_MAP[id];
+    // Aplica modelo + layout + colores del preset de golpe
+    update({ businessModel: id, layout: preset.layout, colors: preset.colors as StoreTheme['colors'] });
+  };
+
+  return (
+    <div className="space-y-2">
+
+      {/* ── Layout ── */}
+      <Divider icon={LayoutGrid} label="Layout de página" />
+      <div className="grid grid-cols-2 gap-2">
+        {LAYOUTS.map(({ id, label, desc }) => {
+          const active = currentLayout === id;
+          return (
+            <button
+              key={id}
+              onClick={() => update({ layout: id })}
+              className={cn(
+                'flex flex-col gap-1 p-2.5 rounded-xl text-left transition-all',
+                active
+                  ? 'bg-emerald-500/10 ring-1 ring-emerald-500/60'
+                  : 'bg-[#141419] ring-1 ring-transparent hover:bg-[#18181E] hover:ring-[#28283A]',
+              )}
+            >
+              <span className={cn('text-[11px] font-bold', active ? 'text-emerald-400' : 'text-[#C8C8DC]')}>{label}</span>
+              <span className="text-[9px] leading-tight text-[#5A5A70]">{desc}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* ── Layout preview visual ── */}
+      <LayoutPreview current={currentLayout} />
+
+      {/* ── Modelo de negocio ── */}
+      <Divider icon={Store} label="Modelo de negocio" />
+      <p className="text-[9px] text-[#5A5A70] px-1 -mt-1">
+        Al elegir un modelo se aplican el layout y paleta recomendados.
+      </p>
+      <div className="space-y-1">
+        {MODELS.map(({ id, label, emoji, desc }) => {
+          const active = currentModel === id;
+          return (
+            <button
+              key={id}
+              onClick={() => handleModelSelect(id)}
+              className={cn(
+                'w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-all',
+                active
+                  ? 'bg-emerald-500/10 ring-1 ring-emerald-500/60'
+                  : 'bg-[#141419] ring-1 ring-transparent hover:bg-[#18181E] hover:ring-[#28283A]',
+              )}
+            >
+              <span className="text-base flex-shrink-0">{emoji}</span>
+              <div className="flex-1 min-w-0">
+                <p className={cn('text-[11px] font-bold leading-none', active ? 'text-emerald-400' : 'text-[#C8C8DC]')}>{label}</p>
+                <p className="text-[9px] text-[#5A5A70] mt-0.5 truncate">{desc}</p>
+              </div>
+              {active && <span className="text-[10px] font-black text-emerald-400 flex-shrink-0">✓</span>}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// Preview visual del layout seleccionado
+function LayoutPreview({ current }: { current: LayoutMode }) {
+  return (
+    <div className="rounded-xl bg-[#141419] p-2 flex gap-1.5 h-14 items-stretch overflow-hidden">
+      {current === 'default' && (
+        <>
+          <div className="flex-1 rounded-md bg-[#252534]" />
+          <div className="flex flex-col gap-1 flex-1">
+            <div className="flex-1 rounded bg-[#1C1C28]" />
+            <div className="flex-1 rounded bg-[#1C1C28]" />
+            <div className="flex-1 rounded bg-[#1C1C28]" />
+          </div>
+        </>
+      )}
+      {current === 'centered' && (
+        <div className="flex-1 flex flex-col items-center gap-1 px-4">
+          <div className="w-3/4 h-2 rounded bg-[#252534]" />
+          <div className="flex gap-1 w-full justify-center">
+            {[1,2,3].map(i => <div key={i} className="w-6 h-6 rounded bg-[#1C1C28]" />)}
+          </div>
+        </div>
+      )}
+      {current === 'editorial' && (
+        <>
+          <div className="w-2/3 rounded-md bg-[#252534]" />
+          <div className="flex flex-col gap-1 w-1/3">
+            <div className="flex-1 rounded bg-[#1C1C28]" />
+            <div className="flex-1 rounded bg-[#1C1C28]" />
+          </div>
+        </>
+      )}
+      {current === 'fullwidth' && (
+        <div className="flex-1 flex flex-col gap-1">
+          <div className="h-5 rounded bg-[#252534]" />
+          <div className="flex gap-1 flex-1">
+            {[1,2,3,4].map(i => <div key={i} className="flex-1 rounded bg-[#1C1C28]" />)}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── ColorsTab ────────────────────────────────────────────────────────────────
+// Ahora con swatches de presets primero, luego pickers individuales
+
+function ColorsTab({ theme, patch }: { theme: StoreTheme; patch: (p: Partial<StoreTheme['colors']>) => void }) {
+  return (
+    <div className="space-y-2">
+
+      {/* Paletas rápidas — igual a la imagen */}
+      <Divider icon={Sparkles} label="Paletas predefinidas" />
+      <ColorPresetsGrid current={theme.colors} onSelect={patch} />
+
+      {/* Color primario + secundario */}
+      <Divider icon={Palette} label="Acento" />
+      <Group>
+        <ColorRow label="Primario"   value={theme.colors.primary}   onChange={(v) => patch({ primary: v })}   />
+        <Sep />
+        <ColorRow label="Secundario" value={theme.colors.secondary} onChange={(v) => patch({ secondary: v })} />
+      </Group>
+
+      {/* Fondos */}
+      <Divider icon={Layout} label="Fondos" />
+      <Group>
+        <ColorRow label="Fondo"      value={theme.colors.background} onChange={(v) => patch({ background: v })} />
+        <Sep />
+        <ColorRow label="Superficie" value={theme.colors.surface}    onChange={(v) => patch({ surface: v })}    />
+        <Sep />
+        <ColorRow label="Borde"      value={theme.colors.border}     onChange={(v) => patch({ border: v })}     />
+      </Group>
+
+      {/* Texto */}
+      <Divider icon={Type} label="Texto" />
+      <Group>
+        <ColorRow label="Principal"  value={theme.colors.text}      onChange={(v) => patch({ text: v })}      />
+        <Sep />
+        <ColorRow label="Secundario" value={theme.colors.textMuted} onChange={(v) => patch({ textMuted: v })} />
+      </Group>
+
+      {/* Estados */}
+      <Divider icon={SlidersHorizontal} label="Estados" />
+      <Group>
+        <ColorRow label="Éxito"       value={theme.colors.success} onChange={(v) => patch({ success: v })} />
+        <Sep />
+        <ColorRow label="Error"       value={theme.colors.error}   onChange={(v) => patch({ error: v })}   />
+        <Sep />
+        <ColorRow label="Advertencia" value={theme.colors.warning} onChange={(v) => patch({ warning: v })} />
+      </Group>
+    </div>
+  );
+}
+
+// ─── Resto de tabs (sin cambios) ──────────────────────────────────────────────
 
 function BrandingTab({ theme, patch }: { theme: StoreTheme; patch: (p: Partial<StoreTheme['branding']>) => void }) {
   return (
@@ -152,7 +396,6 @@ function BrandingTab({ theme, patch }: { theme: StoreTheme; patch: (p: Partial<S
           <TextInput value={theme.branding.storeName} onChange={(v) => patch({ storeName: v })} placeholder="Mi Tienda" />
         </Prop>
       </Group>
-
       <Divider icon={ImageIcon} label="Recursos" />
       <Group>
         <Prop label="Logo URL">
@@ -175,44 +418,6 @@ function BrandingTab({ theme, patch }: { theme: StoreTheme; patch: (p: Partial<S
         <Prop label="Banner">
           <TextInput value={theme.branding.bannerUrl ?? ''} onChange={(v) => patch({ bannerUrl: v })} placeholder="https://…/banner.jpg" />
         </Prop>
-      </Group>
-    </div>
-  );
-}
-
-function ColorsTab({ theme, patch }: { theme: StoreTheme; patch: (p: Partial<StoreTheme['colors']>) => void }) {
-  return (
-    <div className="space-y-2">
-      <Divider icon={Sparkles} label="Acento" />
-      <Group>
-        <ColorRow label="Primario" value={theme.colors.primary} onChange={(v) => patch({ primary: v })} />
-        <Sep />
-        <ColorRow label="Secundario" value={theme.colors.secondary} onChange={(v) => patch({ secondary: v })} />
-      </Group>
-
-      <Divider icon={Layout} label="Fondos" />
-      <Group>
-        <ColorRow label="Fondo" value={theme.colors.background} onChange={(v) => patch({ background: v })} />
-        <Sep />
-        <ColorRow label="Superficie" value={theme.colors.surface} onChange={(v) => patch({ surface: v })} />
-        <Sep />
-        <ColorRow label="Borde" value={theme.colors.border} onChange={(v) => patch({ border: v })} />
-      </Group>
-
-      <Divider icon={Type} label="Texto" />
-      <Group>
-        <ColorRow label="Principal" value={theme.colors.text} onChange={(v) => patch({ text: v })} />
-        <Sep />
-        <ColorRow label="Secundario" value={theme.colors.textMuted} onChange={(v) => patch({ textMuted: v })} />
-      </Group>
-
-      <Divider icon={SlidersHorizontal} label="Estados" />
-      <Group>
-        <ColorRow label="Éxito" value={theme.colors.success} onChange={(v) => patch({ success: v })} />
-        <Sep />
-        <ColorRow label="Error" value={theme.colors.error} onChange={(v) => patch({ error: v })} />
-        <Sep />
-        <ColorRow label="Advertencia" value={theme.colors.warning} onChange={(v) => patch({ warning: v })} />
       </Group>
     </div>
   );
@@ -363,7 +568,6 @@ function TypographyTab({ theme, patch }: { theme: StoreTheme; patch: (p: Partial
           <TextInput value={theme.typography.fontUrl ?? ''} onChange={(v) => patch({ fontUrl: v })} placeholder="https://fonts.googleapis.com/…" />
         </div>
       </Group>
-
       <Divider icon={Sparkles} label="Vista previa" />
       <div className="rounded-xl bg-[#141419] px-4 py-3 space-y-0.5" style={{ fontFamily: `'${theme.typography.fontFamily}', sans-serif`, fontSize: theme.typography.baseFontSize }}>
         <p className="font-bold text-[#D8D8E8]" style={{ fontSize: '1em' }}>Título del producto</p>
@@ -385,17 +589,16 @@ function NavbarTab({ theme, patch, patchTopBar, patchCategoryBar, patchAnnouncem
     <div className="space-y-2">
       <Divider icon={Layout} label="Header principal" />
       <Group>
-        <ColorRow label="Fondo" value={theme.navbar.backgroundColor} onChange={(v) => patch({ backgroundColor: v })} />
+        <ColorRow label="Fondo"   value={theme.navbar.backgroundColor} onChange={(v) => patch({ backgroundColor: v })} />
         <Sep />
-        <ColorRow label="Texto" value={theme.navbar.textColor} onChange={(v) => patch({ textColor: v })} />
+        <ColorRow label="Texto"   value={theme.navbar.textColor}       onChange={(v) => patch({ textColor: v })}       />
         <Sep />
-        <ColorRow label="Acento" value={theme.navbar.activeColor} onChange={(v) => patch({ activeColor: v })} />
+        <ColorRow label="Acento"  value={theme.navbar.activeColor}     onChange={(v) => patch({ activeColor: v })}     />
         <Sep />
-        <Toggle label="Sticky" description="Se fija al scroll" value={theme.navbar.sticky} onChange={(v) => patch({ sticky: v })} />
+        <Toggle label="Sticky"   description="Se fija al scroll" value={theme.navbar.sticky}     onChange={(v) => patch({ sticky: v })}     />
         <Sep />
-        <Toggle label="Búsqueda" description="Mostrar barra" value={theme.navbar.showSearch} onChange={(v) => patch({ showSearch: v })} />
+        <Toggle label="Búsqueda" description="Mostrar barra"    value={theme.navbar.showSearch}  onChange={(v) => patch({ showSearch: v })} />
       </Group>
-
       <Divider icon={Rows3} label="Barra superior" />
       <Group>
         <Toggle label="Visible" value={theme.topBar.visible} onChange={(v) => patchTopBar({ visible: v })} />
@@ -404,22 +607,21 @@ function NavbarTab({ theme, patch, patchTopBar, patchCategoryBar, patchAnnouncem
             <Sep />
             <ColorRow label="Fondo" value={theme.topBar.backgroundColor} onChange={(v) => patchTopBar({ backgroundColor: v })} />
             <Sep />
-            <ColorRow label="Texto" value={theme.topBar.textColor} onChange={(v) => patchTopBar({ textColor: v })} />
+            <ColorRow label="Texto" value={theme.topBar.textColor}       onChange={(v) => patchTopBar({ textColor: v })}       />
           </>
         )}
       </Group>
-
       <Divider icon={AlignJustify} label="Barra de categorías" />
       <Group>
         <Toggle label="Visible" value={theme.categoryBar.visible} onChange={(v) => patchCategoryBar({ visible: v })} />
         {theme.categoryBar.visible && (
           <>
             <Sep />
-            <ColorRow label="Fondo" value={theme.categoryBar.backgroundColor} onChange={(v) => patchCategoryBar({ backgroundColor: v })} />
+            <ColorRow label="Fondo"  value={theme.categoryBar.backgroundColor} onChange={(v) => patchCategoryBar({ backgroundColor: v })} />
             <Sep />
-            <ColorRow label="Texto" value={theme.categoryBar.textColor} onChange={(v) => patchCategoryBar({ textColor: v })} />
+            <ColorRow label="Texto"  value={theme.categoryBar.textColor}       onChange={(v) => patchCategoryBar({ textColor: v })}       />
             <Sep />
-            <ColorRow label="Botón" value={theme.categoryBar.buttonColor} onChange={(v) => patchCategoryBar({ buttonColor: v })} />
+            <ColorRow label="Botón"  value={theme.categoryBar.buttonColor}     onChange={(v) => patchCategoryBar({ buttonColor: v })}     />
             <Sep />
             <Prop label="Label">
               <TextInput value={theme.categoryBar.buttonLabel} onChange={(v) => patchCategoryBar({ buttonLabel: v })} placeholder="Categorías" />
@@ -427,7 +629,6 @@ function NavbarTab({ theme, patch, patchTopBar, patchCategoryBar, patchAnnouncem
           </>
         )}
       </Group>
-
       <Divider icon={Megaphone} label="Barra de anuncio" />
       <Group>
         <Toggle label="Visible" value={theme.announcementBar.visible} onChange={(v) => patchAnnouncement({ visible: v })} />
@@ -441,7 +642,7 @@ function NavbarTab({ theme, patch, patchTopBar, patchCategoryBar, patchAnnouncem
             <Sep />
             <ColorRow label="Fondo" value={theme.announcementBar.backgroundColor} onChange={(v) => patchAnnouncement({ backgroundColor: v })} />
             <Sep />
-            <ColorRow label="Texto" value={theme.announcementBar.textColor} onChange={(v) => patchAnnouncement({ textColor: v })} />
+            <ColorRow label="Texto" value={theme.announcementBar.textColor}       onChange={(v) => patchAnnouncement({ textColor: v })}       />
             <Sep />
             <div className="rounded-lg h-7 flex items-center justify-center text-[11px] font-medium px-2 text-center"
               style={{ backgroundColor: theme.announcementBar.backgroundColor, color: theme.announcementBar.textColor }}>
@@ -454,85 +655,22 @@ function NavbarTab({ theme, patch, patchTopBar, patchCategoryBar, patchAnnouncem
   );
 }
 
-function CardsTab({ theme, patch }: { theme: StoreTheme; patch: (p: Partial<StoreTheme['productCards']>) => void }) {
-  const cfg = theme.productCards;
-  return (
-    <div className="space-y-2">
-      <Divider icon={LayoutGrid} label="Diseño de tarjeta" />
-      <VariantPicker value={cfg.variant} onChange={(v) => patch({ variant: v })} />
-
-      <Divider icon={SlidersHorizontal} label="Forma" />
-      <Group>
-        <Slider label="Border radius" value={parseInt(cfg.borderRadius)} unit="px" min={0} max={24}
-          onChange={(v) => patch({ borderRadius: `${v}px` })} />
-        <Sep />
-        <Slider label="Altura de imagen" value={parseInt(cfg.imageHeight)} unit="px" min={120} max={320}
-          onChange={(v) => patch({ imageHeight: `${v}px` })} />
-        <Sep />
-        <Select label="Proporción de imagen" value={cfg.imageAspect} options={[
-          { value: 'auto',      label: 'Auto (altura fija)' },
-          { value: 'square',    label: 'Cuadrada 1:1' },
-          { value: 'portrait',  label: 'Vertical 3:4' },
-          { value: 'landscape', label: 'Horizontal 4:3' },
-        ]} onChange={(v) => patch({ imageAspect: v })} />
-      </Group>
-
-      <Divider icon={MousePointerClick} label="Botón" />
-      <Group>
-        <Select label="Estilo del botón" value={cfg.buttonStyle} options={[
-          { value: 'rounded', label: 'Redondeado' },
-          { value: 'pill',    label: 'Píldora' },
-          { value: 'square',  label: 'Cuadrado' },
-        ]} onChange={(v) => patch({ buttonStyle: v })} />
-      </Group>
-
-      <Divider icon={Sparkles} label="Interacción" />
-      <Group>
-        <Select label="Efecto hover" value={cfg.hoverEffect} options={[
-          { value: 'zoom', label: 'Zoom a la imagen' },
-          { value: 'lift', label: 'Elevar tarjeta' },
-          { value: 'none', label: 'Sin efecto' },
-        ]} onChange={(v) => patch({ hoverEffect: v })} />
-        <Sep />
-        <Toggle label="Sombra al hover" value={cfg.shadow} onChange={(v) => patch({ shadow: v })} />
-      </Group>
-
-      <Divider icon={Eye} label="Elementos visibles" />
-      <Group>
-        <Toggle label="Badge (HOT/NEW/SALE)" value={cfg.showBadge} onChange={(v) => patch({ showBadge: v })} />
-        <Sep />
-        <Toggle label="Wishlist (corazón)" value={cfg.showWishlist} onChange={(v) => patch({ showWishlist: v })} />
-        <Sep />
-        <Toggle label="Categoría" value={cfg.showCategory} onChange={(v) => patch({ showCategory: v })} />
-        <Sep />
-        <Toggle label="Rating (estrellas)" value={cfg.showRating} onChange={(v) => patch({ showRating: v })} />
-        <Sep />
-        <Toggle label="Indicador de stock" value={cfg.showStock} onChange={(v) => patch({ showStock: v })} />
-      </Group>
-    </div>
-  );
-}
-
-// ─── Variant picker (visual thumbnails) ──────────────────────────────────────
-const VARIANTS: Array<{ id: StoreTheme['productCards']['variant']; label: string; desc: string; Preview: React.FC }> = [
-  { id: 'classic', label: 'Classic', desc: 'Imagen + info + botón',   Preview: PreviewClassic },
+const CARD_VARIANTS: Array<{ id: StoreTheme['productCards']['variant']; label: string; desc: string; Preview: React.FC }> = [
+  { id: 'classic', label: 'Classic', desc: 'Imagen + info + botón',    Preview: PreviewClassic },
   { id: 'minimal', label: 'Minimal', desc: 'Sin borde, botón al hover', Preview: PreviewMinimal },
-  { id: 'overlay', label: 'Overlay', desc: 'Info sobre la imagen',    Preview: PreviewOverlay },
-  { id: 'compact', label: 'Compact', desc: 'Horizontal (lista)',       Preview: PreviewCompact },
+  { id: 'overlay', label: 'Overlay', desc: 'Info sobre la imagen',      Preview: PreviewOverlay },
+  { id: 'compact', label: 'Compact', desc: 'Horizontal (lista)',         Preview: PreviewCompact },
 ];
 
 function VariantPicker({ value, onChange }: { value: StoreTheme['productCards']['variant']; onChange: (v: StoreTheme['productCards']['variant']) => void }) {
   return (
     <div className="grid grid-cols-2 gap-2">
-      {VARIANTS.map(({ id, label, desc, Preview }) => {
+      {CARD_VARIANTS.map(({ id, label, desc, Preview }) => {
         const selected = value === id;
         return (
           <button key={id} onClick={() => onChange(id)}
-            className={cn(
-              'group text-left rounded-xl p-2 transition-all',
-              selected ? 'bg-emerald-500/10 ring-1 ring-emerald-500/60' : 'bg-[#141419] hover:bg-[#18181E] ring-1 ring-transparent hover:ring-[#28283A]',
-            )}>
-            <div className={cn('rounded-lg overflow-hidden mb-1.5 h-[72px] flex items-center justify-center', selected ? 'bg-[#0C0C10]' : 'bg-[#0C0C10]')}>
+            className={cn('group text-left rounded-xl p-2 transition-all', selected ? 'bg-emerald-500/10 ring-1 ring-emerald-500/60' : 'bg-[#141419] hover:bg-[#18181E] ring-1 ring-transparent hover:ring-[#28283A]')}>
+            <div className="rounded-lg overflow-hidden mb-1.5 h-[72px] flex items-center justify-center bg-[#0C0C10]">
               <Preview />
             </div>
             <p className={cn('text-[11px] font-semibold leading-none', selected ? 'text-emerald-400' : 'text-[#C8C8DC]')}>{label}</p>
@@ -544,7 +682,6 @@ function VariantPicker({ value, onChange }: { value: StoreTheme['productCards'][
   );
 }
 
-// Mini SVG-free previews (CSS only)
 function PreviewClassic() {
   return (
     <div className="w-[68px] h-[60px] rounded-md bg-white overflow-hidden border border-[#28283A] flex flex-col">
@@ -559,19 +696,17 @@ function PreviewClassic() {
     </div>
   );
 }
-
 function PreviewMinimal() {
   return (
     <div className="w-[68px] h-[60px] flex flex-col">
       <div className="flex-1 rounded-md bg-gradient-to-br from-[#E5E5EC] to-[#CCCCD6]" />
       <div className="h-[18px] pt-1.5 space-y-0.5">
-        <div className="h-1 w-8 bg-[#2A2A34] rounded-sm" />
+        <div className="h-1 w-2/3 bg-[#2A2A34] rounded-sm" />
         <div className="h-1 w-5 bg-[#5A5A6A] rounded-sm" />
       </div>
     </div>
   );
 }
-
 function PreviewOverlay() {
   return (
     <div className="w-[52px] h-[62px] rounded-md overflow-hidden relative bg-gradient-to-br from-[#E5E5EC] to-[#888896]">
@@ -586,7 +721,6 @@ function PreviewOverlay() {
     </div>
   );
 }
-
 function PreviewCompact() {
   return (
     <div className="w-[80px] h-[42px] rounded-md bg-white border border-[#28283A] flex overflow-hidden">
@@ -603,14 +737,58 @@ function PreviewCompact() {
   );
 }
 
+function CardsTab({ theme, patch }: { theme: StoreTheme; patch: (p: Partial<StoreTheme['productCards']>) => void }) {
+  const cfg = theme.productCards;
+  return (
+    <div className="space-y-2">
+      <Divider icon={LayoutGrid} label="Diseño de tarjeta" />
+      <VariantPicker value={cfg.variant} onChange={(v) => patch({ variant: v })} />
+      <Divider icon={SlidersHorizontal} label="Forma" />
+      <Group>
+        <Slider label="Border radius" value={parseInt(cfg.borderRadius)} unit="px" min={0} max={24}
+          onChange={(v) => patch({ borderRadius: `${v}px` })} />
+        <Sep />
+        <Slider label="Altura de imagen" value={parseInt(cfg.imageHeight)} unit="px" min={120} max={320}
+          onChange={(v) => patch({ imageHeight: `${v}px` })} />
+        <Sep />
+        <Select label="Proporción de imagen" value={cfg.imageAspect} options={[
+          { value: 'auto', label: 'Auto (altura fija)' }, { value: 'square', label: 'Cuadrada 1:1' },
+          { value: 'portrait', label: 'Vertical 3:4' },   { value: 'landscape', label: 'Horizontal 4:3' },
+        ]} onChange={(v) => patch({ imageAspect: v })} />
+      </Group>
+      <Divider icon={MousePointerClick} label="Botón" />
+      <Group>
+        <Select label="Estilo del botón" value={cfg.buttonStyle} options={[
+          { value: 'rounded', label: 'Redondeado' }, { value: 'pill', label: 'Píldora' }, { value: 'square', label: 'Cuadrado' },
+        ]} onChange={(v) => patch({ buttonStyle: v })} />
+      </Group>
+      <Divider icon={Sparkles} label="Interacción" />
+      <Group>
+        <Select label="Efecto hover" value={cfg.hoverEffect} options={[
+          { value: 'zoom', label: 'Zoom a la imagen' }, { value: 'lift', label: 'Elevar tarjeta' }, { value: 'none', label: 'Sin efecto' },
+        ]} onChange={(v) => patch({ hoverEffect: v })} />
+        <Sep />
+        <Toggle label="Sombra al hover" value={cfg.shadow} onChange={(v) => patch({ shadow: v })} />
+      </Group>
+      <Divider icon={Eye} label="Elementos visibles" />
+      <Group>
+        <Toggle label="Badge (HOT/NEW/SALE)"  value={cfg.showBadge}    onChange={(v) => patch({ showBadge: v })}    />
+        <Sep /><Toggle label="Wishlist (corazón)"    value={cfg.showWishlist} onChange={(v) => patch({ showWishlist: v })} />
+        <Sep /><Toggle label="Categoría"             value={cfg.showCategory} onChange={(v) => patch({ showCategory: v })} />
+        <Sep /><Toggle label="Rating (estrellas)"    value={cfg.showRating}   onChange={(v) => patch({ showRating: v })}   />
+        <Sep /><Toggle label="Indicador de stock"    value={cfg.showStock}    onChange={(v) => patch({ showStock: v })}    />
+      </Group>
+    </div>
+  );
+}
+
 function LoginTab({ theme, patch }: { theme: StoreTheme; patch: (p: Partial<StoreTheme['login']>) => void }) {
   return (
     <div className="space-y-2">
       <Divider icon={LogIn} label="Panel derecho" />
       <Group>
         <Select label="Tipo de fondo" value={theme.login.backgroundType} options={[
-          { value: 'color', label: 'Color sólido' },
-          { value: 'image', label: 'Imagen' },
+          { value: 'color', label: 'Color sólido' }, { value: 'image', label: 'Imagen' },
         ]} onChange={(v) => patch({ backgroundType: v })} />
         <Sep />
         {theme.login.backgroundType === 'color'
@@ -642,7 +820,7 @@ function LoginTab({ theme, patch }: { theme: StoreTheme; patch: (p: Partial<Stor
 // ─── Main panel ───────────────────────────────────────────────────────────────
 
 export function ThemeEditorPanel() {
-  const isOpen = useUIStore((s) => s.isThemeEditorOpen);
+  const isOpen           = useUIStore((s) => s.isThemeEditorOpen);
   const closeThemeEditor = useUIStore((s) => s.closeThemeEditor);
   const { theme, updateTheme, resetTheme } = useTheme();
   const [activeTab, setActiveTab] = useState<Tab>('branding');
@@ -654,9 +832,7 @@ export function ThemeEditorPanel() {
 
   return (
     <>
-      {isOpen && (
-        <div className="fixed inset-0 z-40" onClick={closeThemeEditor} />
-      )}
+      {isOpen && <div className="fixed inset-0 z-40" onClick={closeThemeEditor} />}
 
       <div
         className={cn(
@@ -665,7 +841,7 @@ export function ThemeEditorPanel() {
         )}
         style={{ backgroundColor: '#0C0C10', boxShadow: '-8px 0 32px rgba(0,0,0,0.6)' }}
       >
-        {/* ── Header ── */}
+        {/* Header */}
         <div className="flex items-center justify-between px-4 h-12 shrink-0" style={{ borderBottom: '1px solid #181820' }}>
           <div className="flex items-center gap-2.5">
             <div className="w-6 h-6 rounded-md bg-emerald-500/20 flex items-center justify-center shrink-0">
@@ -688,37 +864,32 @@ export function ThemeEditorPanel() {
           </div>
         </div>
 
-        {/* ── Tab grid (4 cols) ── */}
+        {/* Tabs */}
         <div className="grid grid-cols-4 gap-1 p-2 shrink-0" style={{ borderBottom: '1px solid #181820' }}>
           {TABS.map(({ id, label, icon: Icon }) => (
-            <button
-              key={id}
-              onClick={() => setActiveTab(id)}
+            <button key={id} onClick={() => setActiveTab(id)}
               className={cn(
                 'flex flex-col items-center gap-1 py-2.5 rounded-xl text-[10px] font-medium transition-all duration-150',
-                activeTab === id
-                  ? 'bg-emerald-500/12 text-emerald-400'
-                  : 'text-[#44445A] hover:text-[#8888A8] hover:bg-white/4',
-              )}
-            >
+                activeTab === id ? 'bg-emerald-500/12 text-emerald-400' : 'text-[#44445A] hover:text-[#8888A8] hover:bg-white/4',
+              )}>
               <Icon size={14} />
               {label}
             </button>
           ))}
         </div>
 
-        {/* ── Active tab label ── */}
+        {/* Tab label */}
         <div className="flex items-center gap-2 px-4 h-8 shrink-0">
           <activeTabInfo.icon size={11} className="text-emerald-500" />
-          <span className="text-[11px] font-semibold text-[#6868888]">{activeTabInfo.label}</span>
+          <span className="text-[11px] font-semibold text-[#686888]">{activeTabInfo.label}</span>
         </div>
 
-        {/* ── Content ── */}
+        {/* Content */}
         <div className="flex-1 overflow-y-auto px-3 pb-6">
-          {activeTab === 'branding'    && <BrandingTab    theme={theme} patch={(v) => patch('branding', v)} />}
-          {activeTab === 'colors'      && <ColorsTab      theme={theme} patch={(v) => patch('colors', v)} />}
-          {activeTab === 'typography'  && <TypographyTab  theme={theme} patch={(v) => patch('typography', v)} />}
-          {activeTab === 'navbar'      && (
+          {activeTab === 'branding'   && <BrandingTab    theme={theme} patch={(v) => patch('branding', v)} />}
+          {activeTab === 'colors'     && <ColorsTab      theme={theme} patch={(v) => patch('colors', v)} />}
+          {activeTab === 'typography' && <TypographyTab  theme={theme} patch={(v) => patch('typography', v)} />}
+          {activeTab === 'navbar'     && (
             <NavbarTab
               theme={theme}
               patch={(v) => patch('navbar', v)}
@@ -727,14 +898,22 @@ export function ThemeEditorPanel() {
               patchAnnouncement={(v) => patch('announcementBar', v)}
             />
           )}
-          {activeTab === 'home'        && (
-            <HomeSectionsTab
-              sections={theme.homeSections}
-              onChange={(next) => updateTheme({ homeSections: next } as unknown as Parameters<typeof updateTheme>[0])}
-            />
+          {activeTab === 'home' && (
+            <div className="space-y-4">
+              <HomeSectionsTab
+                sections={theme.homeSections}
+                onChange={(next) => updateTheme({ homeSections: next } as Parameters<typeof updateTheme>[0])}
+              />
+              <div className="mt-2 pt-2" style={{ borderTop: '1px solid #1E1E2A' }}>
+                <LayoutModelSection
+                  theme={theme}
+                  update={(p) => updateTheme(p as Parameters<typeof updateTheme>[0])}
+                />
+              </div>
+            </div>
           )}
-          {activeTab === 'cards'       && <CardsTab       theme={theme} patch={(v) => patch('productCards', v)} />}
-          {activeTab === 'login'       && <LoginTab       theme={theme} patch={(v) => patch('login', v)} />}
+          {activeTab === 'cards' && <CardsTab theme={theme} patch={(v) => patch('productCards', v)} />}
+          {activeTab === 'login' && <LoginTab theme={theme} patch={(v) => patch('login', v)} />}
         </div>
       </div>
     </>

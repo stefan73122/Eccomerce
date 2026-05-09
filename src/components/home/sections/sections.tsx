@@ -3,7 +3,8 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import type { HomeSection } from '@/lib/theme/theme.types';
+import { useTheme } from '@/lib/theme/ThemeContext';
+import type { HomeSection, LayoutMode } from '@/lib/theme/theme.types';
 import { categoryService } from '@/services/categoryService';
 import type { Category } from '@/types';
 import HeroCarousel from '@/components/home/HeroCarousel';
@@ -21,13 +22,13 @@ export function PromotionsSection({ section }: { section: HomeSection }) {
   ];
   return (
     <section className="px-4 sm:px-6 lg:px-20 py-8 bg-[var(--bg)]">
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         {promos.map((p) => (
-          <div key={p.title} className="flex items-center gap-3 bg-[var(--bg-light)] rounded-xl p-4 border border-[var(--border)]">
-            <div className="text-3xl">{p.icon}</div>
-            <div>
-              <p className="text-sm font-bold text-[var(--text-dark)]">{p.title}</p>
-              <p className="text-xs text-[var(--text-muted)]">{p.desc}</p>
+          <div key={p.title} className="flex min-h-[96px] min-w-0 items-center gap-3 bg-[var(--bg-light)] rounded-xl p-4 border border-[var(--border)]">
+            <div className="text-3xl shrink-0">{p.icon}</div>
+            <div className="min-w-0">
+              <p className="text-sm font-bold text-[var(--text-dark)] leading-snug truncate">{p.title}</p>
+              <p className="text-xs text-[var(--text-muted)] leading-relaxed truncate">{p.desc}</p>
             </div>
           </div>
         ))}
@@ -50,6 +51,10 @@ export function CategoriesSection({ section }: { section: HomeSection }) {
 
 // ─── 5. Productos en promoción ───────────────────────────────────────────────
 export function SaleProductsSection({ section }: { section: HomeSection }) {
+  const { theme } = useTheme();
+  const layout = theme.layout ?? 'default';
+  const gridCols = layout === 'editorial' ? 2 : layout === 'centered' ? 3 : 4;
+
   return (
     <section className="px-4 sm:px-6 lg:px-20 py-10 bg-[var(--bg-light)]">
       <SectionHeader
@@ -58,7 +63,7 @@ export function SaleProductsSection({ section }: { section: HomeSection }) {
         eyebrow="OFERTAS"
         viewAllHref="/products?filter=sale"
       />
-      <ProductGrid limit={6} cols={3} />
+      <ProductGrid limit={6} cols={gridCols as 2 | 3 | 4} />
     </section>
   );
 }
@@ -79,6 +84,9 @@ export function MainBannerSection({ section }: { section: HomeSection }) {
 
 // ─── 7. Productos por categoría (rotativo con tabs) ──────────────────────────
 export function CategoryProductsSection({ section }: { section: HomeSection }) {
+  const { theme } = useTheme();
+  const layout = theme.layout ?? 'default';
+  const gridCols = layout === 'editorial' ? 2 : layout === 'centered' ? 3 : 4;
   const [categories, setCategories] = useState<Category[]>([]);
   const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null);
 
@@ -114,13 +122,17 @@ export function CategoryProductsSection({ section }: { section: HomeSection }) {
           ))}
         </div>
       )}
-      <ProductGrid limit={8} cols={4} />
+      <ProductGrid limit={8} cols={gridCols as 2 | 3 | 4} />
     </section>
   );
 }
 
 // ─── 8. Sugerencias al cliente ───────────────────────────────────────────────
 export function SuggestionsSection({ section }: { section: HomeSection }) {
+  const { theme } = useTheme();
+  const layout = theme.layout ?? 'default';
+  const gridCols = layout === 'editorial' ? 2 : layout === 'centered' ? 3 : 4;
+
   return (
     <section className="px-4 sm:px-6 lg:px-20 py-10 bg-[var(--bg-light)]">
       <SectionHeader
@@ -129,7 +141,7 @@ export function SuggestionsSection({ section }: { section: HomeSection }) {
         eyebrow="SUGERENCIAS"
         viewAllHref="/products"
       />
-      <ProductGrid limit={4} cols={4} />
+      <ProductGrid limit={4} cols={gridCols as 2 | 3 | 4} />
     </section>
   );
 }
@@ -160,6 +172,10 @@ export function BrandBannerSection({ section }: { section: HomeSection }) {
 
 // ─── 10. Productos según el banner ───────────────────────────────────────────
 export function BrandProductsSection({ section }: { section: HomeSection }) {
+  const { theme } = useTheme();
+  const layout = theme.layout ?? 'default';
+  const gridCols = layout === 'editorial' ? 2 : layout === 'centered' ? 3 : 4;
+
   return (
     <section className="px-4 sm:px-6 lg:px-20 py-10 bg-[var(--bg)]">
       <SectionHeader
@@ -168,7 +184,7 @@ export function BrandProductsSection({ section }: { section: HomeSection }) {
         eyebrow="DESTACADOS"
         viewAllHref="/products"
       />
-      <ProductGrid limit={4} cols={4} />
+      <ProductGrid limit={4} cols={gridCols as 2 | 3 | 4} />
     </section>
   );
 }

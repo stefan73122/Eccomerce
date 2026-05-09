@@ -20,7 +20,7 @@ function deleteCookie(): void {
 
 function injectCSSVars(theme: StoreTheme): void {
   const root = document.documentElement;
-  const { colors, navbar, productCards, footer, typography } = theme;
+  const { colors, navbar, productCards, footer, typography, layout, businessModel } = theme;
 
   root.style.setProperty('--primary', colors.primary);
   root.style.setProperty('--primary-light', `${colors.primary}1A`);
@@ -42,6 +42,9 @@ function injectCSSVars(theme: StoreTheme): void {
   root.style.setProperty('--navbar-bg', navbar.backgroundColor);
   root.style.setProperty('--navbar-text', navbar.textColor);
   root.style.setProperty('--navbar-active', navbar.activeColor);
+
+  root.dataset.layout = layout || 'default';
+  root.dataset.model = businessModel || 'general';
 
   root.style.setProperty('--card-radius', productCards.borderRadius);
   root.style.setProperty('--card-img-height', productCards.imageHeight);
