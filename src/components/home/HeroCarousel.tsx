@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/cn';
+import { useTheme } from '@/lib/theme/ThemeContext';
 import { useRegionStore } from '@/store/useRegionStore';
 import { useMounted } from '@/lib/useMounted';
 import api from '@/lib/axios';
@@ -43,6 +44,8 @@ const FALLBACK_SLIDES: ApiBanner[] = [
 ];
 
 export default function HeroCarousel() {
+  const { theme } = useTheme();
+  const layout = theme.layout ?? 'default';
   const mounted = useMounted();
   const selectedRegion = useRegionStore((s) => s.selectedRegion);
   const [slides, setSlides] = useState<ApiBanner[]>(FALLBACK_SLIDES);
@@ -97,7 +100,14 @@ export default function HeroCarousel() {
   }, [goToNext]);
 
   return (
-    <div className="w-full h-[320px] sm:h-[420px] lg:h-[560px] relative overflow-hidden bg-[#0A0A0A]">
+    <div
+      className={cn(
+        'w-full h-[320px] sm:h-[420px] relative overflow-hidden bg-[#0A0A0A]',
+        layout === 'centered' && 'lg:max-w-[960px] lg:mx-auto',
+        layout === 'editorial' && 'lg:h-[640px]',
+        layout === 'fullwidth' && 'lg:h-[620px]',
+      )}
+    >
       {slides.map((slide, index) => {
         const imageUrl =
           typeof window !== 'undefined' && window.innerWidth < 640 && slide.imageUrlMobile

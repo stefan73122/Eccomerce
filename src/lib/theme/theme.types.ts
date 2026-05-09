@@ -1,12 +1,12 @@
 export type HomeSectionId =
-  | 'promotions'        // 3. Promociones
-  | 'categories'        // 4. Banners de categorías
-  | 'saleProducts'      // 5. Productos en promoción
-  | 'mainBanner'        // 6. Banner principal
-  | 'categoryProducts'  // 7. Productos por categoría (rotativo)
-  | 'suggestions'       // 8. Sugerencias al cliente
-  | 'brandBanner'       // 9. Banner (producto/categoría/marca)
-  | 'brandProducts';    // 10. Productos según el banner
+  | 'promotions'
+  | 'categories'
+  | 'saleProducts'
+  | 'mainBanner'
+  | 'categoryProducts'
+  | 'suggestions'
+  | 'brandBanner'
+  | 'brandProducts';
 
 export interface HomeSection {
   id: HomeSectionId;
@@ -16,6 +16,33 @@ export interface HomeSection {
   bannerImageUrl?: string;
   bannerLinkUrl?: string;
 }
+
+/* ── Layout y modelo de negocio ────────────────────────────── */
+
+export type LayoutMode =
+  | 'default'     // hero full + grid asimétrico
+  | 'centered'    // todo centrado, máx 960px
+  | 'editorial'   // col principal + sidebar
+  | 'fullwidth';  // sin límites, inmersivo
+
+export type BusinessModel =
+  | 'general'      // Amazon: producto primero
+  | 'sport'        // Nike: hero fuerte, branding
+  | 'fashion'      // Zara: visual, minimal
+  | 'food'         // McDonald's: colores fuertes, imágenes grandes
+  | 'street'       // Supreme: minimal extremo
+  | 'marketplace'; // MercadoLibre: categorías primero
+
+/* ── Color presets ─────────────────────────────────────────── */
+
+export interface ColorPreset {
+  id: string;
+  label: string;
+  swatch: string;
+  colors: Partial<StoreTheme['colors']>;
+}
+
+/* ── StoreTheme principal ──────────────────────────────────── */
 
 export interface StoreTheme {
   branding: {
@@ -102,6 +129,9 @@ export interface StoreTheme {
     textColor: string;
   };
 
+  /* Nuevos campos ─────────────────────────────────────────── */
+  layout: LayoutMode;
+  businessModel: BusinessModel;
   homeSections: HomeSection[];
 }
 
